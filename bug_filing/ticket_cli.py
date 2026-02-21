@@ -57,9 +57,14 @@ def _build_parser():
         help="Emit a YAML template for the given project and issue type.",
     )
     add_common(p_template)
-    p_template.add_argument(
+    verbosity = p_template.add_mutually_exclusive_group()
+    verbosity.add_argument(
         "--minimal", action="store_true", default=False,
         help="Omit comments and blank lines from the template.",
+    )
+    verbosity.add_argument(
+        "--maximal", action="store_true", default=False,
+        help="Include all fields, not just required ones.",
     )
 
     # ------------------------------------------------------------------ #
@@ -94,7 +99,7 @@ def _make_index(args):
 
 def _cmd_template(args):
     index = _make_index(args)
-    print(ticket_template(index, minimal=args.minimal), end="")
+    print(ticket_template(index, minimal=args.minimal, maximal=args.maximal), end="")
 
 
 def _cmd_validate(args):

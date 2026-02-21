@@ -17,18 +17,22 @@ def _yaml_key(field_name):
     return re.sub(r'\s+', '_', s).strip('_')
 
 
-def ticket_template(index, minimal=False):
+def ticket_template(index, minimal=False, maximal=False):
     """
-    Generate a YAML template string for a ticket, populated with all
-    user-required fields.
+    Generate a YAML template string for a ticket.
 
-    ADF fields use block scalar (|) format. Choice fields include a comment
-    listing valid options. The YAML keys are underscore_case versions of the
-    human-readable field names.
+    By default, only user-required fields are included. With maximal=True,
+    all fields except unambiguous ones are included. ADF fields use block
+    scalar (|) format. Choice fields include a comment listing valid options.
+    The YAML keys are underscore_case versions of the human-readable field names.
 
     If minimal=True, comments and inter-field blank lines are omitted.
     """
-    fields = sorted(index.user_required, key=lambda f: (0 if f == "Summary" else 1, f))
+    if maximal:
+        all_fields = [f for f in index.allowed_fields()]
+        fields = sorted(all_fields, key=lambda f: (0 if f == "Summary" else 1))
+    else:
+        fields = sorted(index.user_required, key=lambda f: (0 if f == "Summary" else 1, f))
 
     lines = []
     for field_name in fields:
