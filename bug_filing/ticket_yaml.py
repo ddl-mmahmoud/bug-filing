@@ -28,8 +28,10 @@ def ticket_template(index, minimal=False):
 
     If minimal=True, comments and inter-field blank lines are omitted.
     """
+    fields = sorted(index.user_required, key=lambda f: (0 if f == "Summary" else 1, f))
+
     lines = []
-    for field_name in index.user_required:
+    for field_name in fields:
         key = _yaml_key(field_name)
         field_type = index.types[field_name]
         tag = field_type[0]
