@@ -21,9 +21,9 @@ def get_client():
     return _client
 
 
-def get_test_info(test_id: str):
+def get_test_info(test_id):
     return get_client().tests.get_test(test_id)
 
 
-def get_result_info(test_id: str):
+def get_result_info(test_id):
     return get_client().results.get_results(test_id)

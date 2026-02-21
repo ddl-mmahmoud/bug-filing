@@ -42,7 +42,7 @@ VALID_FAILURE_REASONS = [
 ]
 
 
-def build_parser() -> argparse.ArgumentParser:
+def build_parser():
     parser = argparse.ArgumentParser(
         prog="create-ticket",
         description="Create a Jira bug ticket from a TestRail test failure.",
@@ -178,7 +178,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def apply_credential_overrides(args: argparse.Namespace) -> None:
+def apply_credential_overrides(args):
     """
     Copy any credential CLI arguments into the corresponding environment
     variables so the rest of the code can read them via os.environ as usual.
@@ -196,7 +196,7 @@ def apply_credential_overrides(args: argparse.Namespace) -> None:
             os.environ[env_var] = value
 
 
-def check_required_env_vars() -> None:
+def check_required_env_vars():
     """
     Verify that the mandatory environment variables are present after
     credential overrides have been applied.
@@ -219,7 +219,7 @@ def check_required_env_vars() -> None:
         sys.exit(1)
 
 
-def main() -> None:
+def main():
     parser = build_parser()
     args = parser.parse_args()
 

@@ -1,11 +1,12 @@
 import os
+import re
+import html
 import requests
 import logging
 from requests.auth import HTTPBasicAuth
 import json
 
 from bug_filing.testrail_client import get_result_info, get_test_info
-from bug_filing.jira_content import generate_jira_message_with_links
 from bug_filing.fleetcommand_client import fetch_domino_version
 
 
@@ -65,15 +66,25 @@ JIRA_USER_BLACKLIST = [
 ]
 
 
-def _text(text: str, href: str = None) -> dict:
+def _text(text, href=None):
     node = {"type": "text", "text": text}
     if href:
         node["marks"] = [{"type": "link", "attrs": {"href": href}}]
     return node
 
 
-def _para(*content) -> dict:
+def _para(*content):
     return {"type": "paragraph", "content": list(content)}
+
+
+def generate_jira_message_with_links(original_text):
+    link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
+    links = re.findall(link_pattern, original_text)
+    failure_message = html.unescape(original_text.split("\n\n")[0])
+    content = [_para(_text(failure_message))]
+    for link_text, link_url in links:
+        content.append(_para(_text(link_text, href=link_url)))
+    return {"content": content}
 
 
 # Simple module-level cache
@@ -131,16 +142,16 @@ def get_jira_user_ids():
 
 
 def create_jira_bug(
-    test_id: str,
-    summary: str,
-    severity: str,
-    is_blocking: str,
-    add_description: str,
-    failure_reason: str,
-    engteam: str,
-    component: str,
-    assignee: str = "",
-    reporter: str = "QE Automation",
+    test_id,
+    summary,
+    severity,
+    is_blocking,
+    add_description,
+    failure_reason,
+    engteam,
+    component,
+    assignee="",
+    reporter="QE Automation",
 ):
     """
     Creates a Jira issue of type 'Bug' in the DOM project.

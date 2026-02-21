@@ -5,7 +5,7 @@ import requests
 import logging
 
 
-def fetch_domino_version(catalog_id: str, catalog_version: str):
+def fetch_domino_version(catalog_id, catalog_version):
     """
     Makes an API request to Fleetcommand using the catalog ID and version values.
     Returns the domino version associated with the catalog.
