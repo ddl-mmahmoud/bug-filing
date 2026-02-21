@@ -6,8 +6,8 @@ Subcommands
 -----------
 template   Emit a YAML template for the given project / issue type on STDOUT.
 validate   Read a YAML ticket from STDIN and report any errors as JSON.
-hydrate    Read a YAML ticket from STDIN, validate it, and emit the Jira
-           issue-create JSON payload on STDOUT.  Exits non-zero on errors.
+submit     Validate a YAML ticket from STDIN and file it as a Jira issue.
+           Use --dry-run to emit the JSON payload instead of submitting.
 
 Required environment variables
 -------------------------------
@@ -18,14 +18,15 @@ Example usage
 -------------
   ticket-yaml template --project DOM --issuetype Bug
   ticket-yaml validate --project DOM --issuetype Bug < my-ticket.yaml
-  ticket-yaml hydrate  --project DOM --issuetype Bug < my-ticket.yaml
+  ticket-yaml submit   --project DOM --issuetype Bug < my-ticket.yaml
+  ticket-yaml submit   --project DOM --issuetype Bug --dry-run < my-ticket.yaml
 """
 
 import argparse
 import json
 import sys
 
-from bug_filing.jira_client import IssueFieldIndex, jira_requests_session
+from bug_filing.jira_client import JIRA_BASE_URL, JIRA_ISSUE_URL, IssueFieldIndex, jira_requests_session
 from bug_filing.ticket_yaml import build_ticket_payload, ticket_template, validate_ticket_yaml
 
 
@@ -71,13 +72,17 @@ def _build_parser():
     add_common(p_validate)
 
     # ------------------------------------------------------------------ #
-    # hydrate                                                              #
+    # submit                                                               #
     # ------------------------------------------------------------------ #
-    p_hydrate = sub.add_parser(
-        "hydrate",
-        help="Validate a YAML ticket from STDIN and emit the Jira JSON payload.",
+    p_submit = sub.add_parser(
+        "submit",
+        help="Validate and file a YAML ticket from STDIN as a Jira issue.",
     )
-    add_common(p_hydrate)
+    add_common(p_submit)
+    p_submit.add_argument(
+        "--dry-run", action="store_true", default=False,
+        help="Emit the JSON payload instead of submitting to Jira.",
+    )
 
     return parser
 
@@ -101,21 +106,35 @@ def _cmd_validate(args):
         sys.exit(1)
 
 
-def _cmd_hydrate(args):
-    index = _make_index(args)
+def _cmd_submit(args):
+    session = jira_requests_session()
+    index = IssueFieldIndex(session, args.project, args.issuetype)
     yaml_text = sys.stdin.read()
+
     result = validate_ticket_yaml(index, yaml_text)
     if result != {"ok": True}:
         print(json.dumps(result, indent=2), file=sys.stderr)
         sys.exit(1)
+
     payload = build_ticket_payload(index, yaml_text)
-    print(json.dumps(payload, indent=2))
+
+    if args.dry_run:
+        print(json.dumps(payload, indent=2))
+        return
+
+    response = session.post(JIRA_ISSUE_URL, json=payload)
+    if response.status_code == 201:
+        key = response.json()["key"]
+        print(f"Created: {JIRA_BASE_URL}/browse/{key}")
+    else:
+        print(f"Error {response.status_code}: {response.text}", file=sys.stderr)
+        sys.exit(1)
 
 
 _COMMANDS = {
     "template": _cmd_template,
     "validate": _cmd_validate,
-    "hydrate":  _cmd_hydrate,
+    "submit":   _cmd_submit,
 }
 
 
