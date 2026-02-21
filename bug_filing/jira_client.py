@@ -77,6 +77,14 @@ def _para(*content):
     return {"type": "paragraph", "content": list(content)}
 
 
+def _doc(*content):
+    return {
+        "version": 1,
+        "type": "doc",
+        "content": content,
+    }
+
+
 def generate_jira_message_with_links(original_text):
     link_pattern = r"\[([^\]]+)\]\(([^)]+)\)"
     links = re.findall(link_pattern, original_text)
@@ -84,7 +92,7 @@ def generate_jira_message_with_links(original_text):
     content = [_para(_text(failure_message))]
     for link_text, link_url in links:
         content.append(_para(_text(link_text, href=link_url)))
-    return {"content": content}
+    return _doc(*content)
 
 
 # Simple module-level cache
@@ -208,47 +216,27 @@ def create_jira_bug(
             "summary": summary,
             "customfield_12907": {"key": "Severity", "value": severity},
             "versions": [{"name": domino_version}],
-            "customfield_13165": {
-                "version": 1,
-                "type": "doc",
-                "content": [_para(_text("TBD"))],
-            },
-            "customfield_13041": {
-                "version": 1,
-                "type": "doc",
-                "content": [
-                    _para(
-                        _text("Run e2e test: "),
-                        _text(testcase_link, href=testcase_link),
-                    )
-                ],
-            },
-            "customfield_13042": {
-                "version": 1,
-                "type": "doc",
-                "content": [
-                    _para(_text("The feature should be validated by the e2e test."))
-                ],
-            },
-            "customfield_13043": {
-                "version": 1,
-                "type": "doc",
-                "content": stylized_error_message["content"],
-            },
-            "description": {
-                "type": "doc",
-                "version": 1,
-                "content": [
-                    _para(
-                        _text(testrail_link, href=testrail_link),
-                        _text("  \n\n"),
-                        _text(f"To run this test in your PR, run this command: {pr_trigger_command}"),
-                        _text("  \n\n"),
-                        _text(result_info["custom_config_text"]),
-                        _text(add_description),
-                    )
-                ],
-            },
+            "customfield_13165": _doc(_para(_text("TBD"))),
+            "customfield_13041": _doc(
+                _para(
+                    _text("Run e2e test: "),
+                    _text(testcase_link, href=testcase_link),
+                )
+            ),
+            "customfield_13042": _doc(
+                _para(_text("The feature should be validated by the e2e test."))
+            ),
+            "customfield_13043": stylized_error_message,
+            "description": _doc(
+                _para(
+                    _text(testrail_link, href=testrail_link),
+                    _text("  \n\n"),
+                    _text(f"To run this test in your PR, run this command: {pr_trigger_command}"),
+                    _text("  \n\n"),
+                    _text(result_info["custom_config_text"]),
+                    _text(add_description),
+                )
+            ),
             "components": [{"name": component}],
             "customfield_12952": {
                 "key": "Eng. Team",
