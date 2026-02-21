@@ -91,10 +91,15 @@ def validate_ticket_yaml(index, yaml_string):
             ambiguous_fields[yaml_key] = matches
         # len == 0: unrecognised field; silently ignored
 
-    missing_fields = [f for f in index.user_required if f not in resolved]
+    def _is_blank(value):
+        return not value or value == [None]
+
+    missing_fields = [f for f in index.user_required if _is_blank(resolved.get(f))]
 
     ambiguous_values = {}
     for field_name, value in resolved.items():
+        if _is_blank(value):
+            continue
         matcher = index.value_matcher(field_name)
         if matcher is None:
             continue
