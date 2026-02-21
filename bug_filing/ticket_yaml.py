@@ -17,7 +17,7 @@ def _yaml_key(field_name):
     return re.sub(r'\s+', '_', s).strip('_')
 
 
-def ticket_template(index):
+def ticket_template(index, minimal=False):
     """
     Generate a YAML template string for a ticket, populated with all
     user-required fields.
@@ -25,6 +25,8 @@ def ticket_template(index):
     ADF fields use block scalar (|) format. Choice fields include a comment
     listing valid options. The YAML keys are underscore_case versions of the
     human-readable field names.
+
+    If minimal=True, comments and inter-field blank lines are omitted.
     """
     lines = []
     for field_name in index.user_required:
@@ -32,29 +34,33 @@ def ticket_template(index):
         field_type = index.types[field_name]
         tag = field_type[0]
 
-        lines.append(f"# {field_name}")
+        if not minimal:
+            lines.append(f"# {field_name}")
 
         if tag == "adf":
             lines.append(f"{key}: |")
             lines.append(f"  Enter markdown content here")
 
         elif tag == "choice":
-            av = index.allowed_values(field_name)
-            lines.append(f"# options: {_format_options(av)}")
+            if not minimal:
+                av = index.allowed_values(field_name)
+                lines.append(f"# options: {_format_options(av)}")
             lines.append(f"{key}:")
 
         elif tag == "array":
-            inner = field_type[1]
-            if inner[0] == "choice":
-                av = index.allowed_values(field_name)
-                lines.append(f"# options: {_format_options(av)}")
+            if not minimal:
+                inner = field_type[1]
+                if inner[0] == "choice":
+                    av = index.allowed_values(field_name)
+                    lines.append(f"# options: {_format_options(av)}")
             lines.append(f"{key}:")
             lines.append(f"  -")
 
         else:  # string
             lines.append(f"{key}:")
 
-        lines.append("")
+        if not minimal:
+            lines.append("")
 
     return "\n".join(lines)
 
@@ -110,6 +116,9 @@ def validate_ticket_yaml(index, yaml_string):
                 if len(canonicals) != 1:
                     ambiguous_values.setdefault(field_name, {})[str(v)] = matches
 
+    if not (missing_fields or ambiguous_fields or ambiguous_values):
+        return {"ok": True}
+
     errors = {"ok": False}
     if missing_fields:
         errors["missing_fields"] = missing_fields
@@ -117,8 +126,7 @@ def validate_ticket_yaml(index, yaml_string):
         errors["ambiguous_fields"] = ambiguous_fields
     if ambiguous_values:
         errors["ambiguous_values"] = ambiguous_values
-
-    return errors if errors else {"ok": True}
+    return errors
 
 
 def build_ticket_payload(index, yaml_string):
@@ -129,4 +137,7 @@ def build_ticket_payload(index, yaml_string):
     The returned dict has the shape {"fields": {...}} ready for the Jira API.
     """
     data = yaml.safe_load(yaml_string)
-    return index.fuzzy_payload(data)
+    payload = index.fuzzy_payload(data)
+    for field_name, enveloped_value in index.unambiguous.items():
+        payload["fields"].setdefault(index.name_to_key[field_name], enveloped_value)
+    return payload
