@@ -11,58 +11,7 @@ from bug_filing.fleetcommand_client import fetch_domino_version
 from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.jira_session import JIRA_BASE_URL, JIRA_ISSUE_URL, jira_requests_session
 from bug_filing.issue_field_index import IssueFieldIndex
-
-JIRA_USER_BLACKLIST = [
-    "AP Domino",
-    "aws -owner",
-    "BCP Customers",
-    "BCP Internal",
-    "billing finance",
-    "Catalys Integration",
-    "CS Reporting",
-    "domino 360",
-    "Domino Academy",
-    "Domino Customer Marketing",
-    "Domino Partner Network",
-    "Domino Podcast",
-    "Domino Trial",
-    "Employee Experience",
-    "eng-platform sfdc",
-    "Finance Integration",
-    "HR Benefits",
-    "HR Leave",
-    "HR Operations",
-    "HR Team",
-    "HR1 HR",
-    "HR2 HR",
-    "HR3 HR",
-    "InsideView Integration",
-    "Intacct Integration",
-    "integration admin",
-    "Integration Test",
-    "Jira Domino 360",
-    "Jira GitHub",
-    "Jira Integration",
-    "New Relic",
-    "One Password",
-    "People AI Integration",
-    "Platform Service",
-    "Pract User",
-    "QE Platform Service Account",
-    "qe service",
-    "Rev Registrations",
-    "Rev Speakers",
-    "Rev Sponsors",
-    "rfqa domino",
-    "Security Ops",
-    "Selenium Test",
-    "System Tasks",
-    "system test",
-    "teleportcloud admin",
-    "Whistleblower Reporting",
-    "zendesk integration",
-    "Zoom Room",
-]
+from bug_filing.jira_users import get_jira_user_ids
 
 
 def _text(text, href=None):
@@ -93,55 +42,6 @@ def generate_jira_message_with_links(original_text):
     for link_text, link_url in links:
         content.append(_para(_text(link_text, href=link_url)))
     return _doc(*content)
-
-
-# Simple module-level cache
-_jira_user_ids_cache = None
-
-
-def get_jira_user_ids():
-    global _jira_user_ids_cache
-    if _jira_user_ids_cache is not None:
-        return _jira_user_ids_cache
-
-    session = jira_requests_session()
-
-    offset = 0
-    limit = 1000
-    jira_user_ids = {}
-
-    while True:
-        params = {"startAt": offset, "maxResults": limit}
-        response = session.request(
-            "GET",
-            url=f"{JIRA_BASE_URL}/rest/api/3/users/search",
-            params=params,
-        )
-        logging.info(f"jira get users offset {offset}")
-
-        raw_batch = json.loads(response.text)
-        batch_jira_user_ids = {
-            user["displayName"]: user["accountId"]
-            for user in raw_batch
-            if (
-                user["active"]
-                and user["accountType"] == "atlassian"
-                and " " in user["displayName"]
-                and "@" not in user["displayName"]
-                and user["displayName"] not in JIRA_USER_BLACKLIST
-            )
-        }
-        jira_user_ids.update(batch_jira_user_ids)
-        offset += limit
-
-        if len(raw_batch) < limit:
-            break
-
-    _jira_user_ids_cache = {
-        user: jira_user_ids[user]
-        for user in sorted(jira_user_ids.keys(), key=str.lower)
-    }
-    return _jira_user_ids_cache
 
 
 def create_jira_bug(
@@ -246,7 +146,7 @@ def create_jira_bug(
         }
     }
 
-    user_ids = get_jira_user_ids()
+    user_ids = get_jira_user_ids(jira_requests_session())
     reporter_id = user_ids.get(reporter, "")
     if reporter_id:
         payload_dict["fields"]["reporter"] = {"id": reporter_id}
