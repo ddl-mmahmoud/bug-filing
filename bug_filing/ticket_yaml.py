@@ -1,6 +1,6 @@
 import re
 import yaml
-from bug_filing.jira_client import FuzzyMatcher
+from bug_filing.fuzzy_matcher import FuzzyMatcher
 
 
 def _format_options(allowed_values):
