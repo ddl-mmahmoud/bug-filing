@@ -108,7 +108,7 @@ def _cmd_validate(args):
     result = validate_ticket_yaml(index, yaml_text)
     print(json.dumps(result, indent=2))
     if result != {"ok": True}:
-        sys.exit(1)
+        raise RuntimeError(result)
 
 
 def _cmd_submit(args):
@@ -119,7 +119,7 @@ def _cmd_submit(args):
     result = validate_ticket_yaml(index, yaml_text)
     if result != {"ok": True}:
         print(json.dumps(result, indent=2), file=sys.stderr)
-        sys.exit(1)
+        raise ValueError("Ticket YAML failed validation")
 
     payload = build_ticket_payload(index, yaml_text)
 
@@ -132,8 +132,7 @@ def _cmd_submit(args):
         key = response.json()["key"]
         print(f"Created: {JIRA_BASE_URL}/browse/{key}")
     else:
-        print(f"Error {response.status_code}: {response.text}", file=sys.stderr)
-        sys.exit(1)
+        raise RuntimeError(f"Jira API error {response.status_code}: {response.text}")
 
 
 _COMMANDS = {
@@ -146,7 +145,10 @@ _COMMANDS = {
 def main():
     parser = _build_parser()
     args = parser.parse_args()
-    _COMMANDS[args.subcommand](args)
+    try:
+        _COMMANDS[args.subcommand](args)
+    except (ValueError, RuntimeError) as e:
+        raise
 
 
 if __name__ == "__main__":
