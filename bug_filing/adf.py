@@ -55,10 +55,14 @@ class ADFRenderer(BaseRenderer):
         return node
 
     def render_block_code(self, token):
-        return {
+        node = {
             "type": "codeBlock",
             "content": [{"type": "text", "text": token.children[0].content}],
         }
+        language = getattr(token, "language", None)
+        if language:
+            node["attrs"] = {"language": language}
+        return node
 
     def render_list(self, token):
         list_type = "orderedList" if token.start is not None else "bulletList"
@@ -110,8 +114,8 @@ class ADFRenderer(BaseRenderer):
 
     def render_image(self, token):
         # ADF has no inline image node; render as a link with the alt text
-        alt = token.children[0].content if token.children else token.target
-        return [{"type": "text", "text": alt, "marks": [{"type": "link", "attrs": {"href": token.target}}]}]
+        alt = token.children[0].content if token.children else token.src
+        return [{"type": "text", "text": alt, "marks": [{"type": "link", "attrs": {"href": token.src}}]}]
 
     def render_line_break(self, token):
         if token.soft:
