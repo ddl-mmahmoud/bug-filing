@@ -9,7 +9,7 @@ class IssueFieldIndex:
     looking up a field's API key by its human-readable name.
     """
 
-    def __init__(self, session, project, issuetype):
+    def __init__(self, session, project, issuetype, envelope_fns=None):
         url = f"{JIRA_BASE_URL}/rest/api/3/issue/createmeta"
         params = {
             "projectKeys": project,
@@ -33,6 +33,12 @@ class IssueFieldIndex:
         self._types = None
         self._unambiguous = None
         self._matchers = {}
+        self._envelope_fns = {
+            "adf": self._envelope_adf,
+            "string": self._envelope_string,
+            "choice": self._envelope_choice,
+            **(envelope_fns or {}),
+        }
 
     _IDENTIFIER_KEYS = ["value", "key", "name", "id"]
     _ADF_SYSTEMS = {"description", "environment"}
@@ -155,6 +161,27 @@ class IssueFieldIndex:
             return "ADF"
         raise ValueError(f"Unknown field type: {tag!r}")
 
+    @staticmethod
+    def _envelope_adf(value, field_type):
+        if isinstance(value, str):
+            from bug_filing.adf import from_markdown
+            return from_markdown(value)
+        if not isinstance(value, dict):
+            raise ValueError(f"Expected ADF doc or markdown string, got {type(value).__name__}")
+        return value
+
+    @staticmethod
+    def _envelope_string(value, field_type):
+        if isinstance(value, dict):
+            raise ValueError(f"Expected plain string, got dict")
+        return value
+
+    @staticmethod
+    def _envelope_choice(value, field_type):
+        if isinstance(value, dict):
+            raise ValueError(f"Expected scalar for choice field, got dict")
+        return {field_type[1][0]: value}
+
     def _enveloped(self, value, field_type):
         tag = field_type[0]
 
@@ -166,22 +193,6 @@ class IssueFieldIndex:
         if isinstance(value, list):
             raise ValueError(f"Expected {tag}, got a list")
 
-        if tag == "adf":
-            if isinstance(value, str):
-                from bug_filing.adf import from_markdown
-                return from_markdown(value)
-            if not isinstance(value, dict):
-                raise ValueError(f"Expected ADF doc or markdown string, got {type(value).__name__}")
-            return value
-
-        if tag == "string":
-            if isinstance(value, dict):
-                raise ValueError(f"Expected plain string, got dict")
-            return value
-
-        if tag == "choice":
-            if isinstance(value, dict):
-                raise ValueError(f"Expected scalar for choice field, got dict")
-            return {field_type[1][0]: value}
-
-        raise ValueError(f"Unknown field type: {tag!r}")
+        if tag not in self._envelope_fns:
+            raise ValueError(f"Unknown field type: {tag!r}")
+        return self._envelope_fns[tag](value, field_type)
