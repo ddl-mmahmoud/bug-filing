@@ -24,6 +24,7 @@ Example usage
 
 import argparse
 import json
+import os
 import sys
 
 from bug_filing.jira_client import JIRA_BASE_URL, JIRA_ISSUE_URL, IssueFieldIndex, jira_requests_session
@@ -36,6 +37,27 @@ def _build_parser():
         description="YAML-based Jira ticket authoring tool.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
+    )
+
+    # ------------------------------------------------------------------ #
+    # Credential overrides (fall back to environment variables)           #
+    # ------------------------------------------------------------------ #
+    creds = parser.add_argument_group(
+        "credential overrides",
+        "Each of these overrides the corresponding environment variable. "
+        "If neither is set the tool will exit with an error.",
+    )
+    creds.add_argument(
+        "--jira-username",
+        default=None,
+        metavar="EMAIL",
+        help="Overrides JIRA_API_USERNAME.",
+    )
+    creds.add_argument(
+        "--jira-password",
+        default=None,
+        metavar="TOKEN",
+        help="Overrides JIRA_API_PASSWORD.",
     )
 
     sub = parser.add_subparsers(dest="subcommand", required=True)
@@ -92,6 +114,30 @@ def _build_parser():
     return parser
 
 
+def _apply_credential_overrides(args):
+    """Copy credential CLI args into environment variables."""
+    overrides = {
+        "jira_username": "JIRA_API_USERNAME",
+        "jira_password": "JIRA_API_PASSWORD",
+    }
+    for attr, env_var in overrides.items():
+        value = getattr(args, attr, None)
+        if value is not None:
+            os.environ[env_var] = value
+
+
+def _check_required_env_vars():
+    """Verify that the mandatory Jira environment variables are present."""
+    required = ["JIRA_API_USERNAME", "JIRA_API_PASSWORD"]
+    missing = [v for v in required if not os.environ.get(v)]
+    if missing:
+        raise RuntimeError(
+            "the following required credentials are not set "
+            "(provide them as environment variables or CLI arguments):\n"
+            + "\n".join(f"  {v}" for v in missing)
+        )
+
+
 def _make_index(args):
     session = jira_requests_session()
     return IssueFieldIndex(session, args.project, args.issuetype)
@@ -146,6 +192,8 @@ def main():
     parser = _build_parser()
     args = parser.parse_args()
     try:
+        _apply_credential_overrides(args)
+        _check_required_env_vars()
         _COMMANDS[args.subcommand](args)
     except (ValueError, RuntimeError) as e:
         raise
