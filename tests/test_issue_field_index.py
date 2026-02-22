@@ -47,6 +47,14 @@ def _array_field(name, *, allowed=None, required=False):
     return f
 
 
+def _user_field(name, *, required=False):
+    return {"name": name, "required": required, "schema": {"type": "user"}}
+
+
+def _array_user_field(name, *, required=False):
+    return {"name": name, "required": required, "schema": {"type": "array", "items": "user"}}
+
+
 def _make_index(fields):
     return IssueFieldIndex(_make_session(_createmeta(fields)), "P", "T")
 
@@ -122,6 +130,16 @@ def test_types_array_of_choice():
 def test_types_array_of_string():
     idx = _make_index({"f": _array_field("Labels")})
     assert idx.types["Labels"] == ("array", ("string",))
+
+
+def test_types_user():
+    idx = _make_index({"f": _user_field("Assignee")})
+    assert idx.types["Assignee"] == ("user",)
+
+
+def test_types_array_of_user():
+    idx = _make_index({"f": _array_user_field("Watchers")})
+    assert idx.types["Watchers"] == ("array", ("user",))
 
 
 def test_types_is_cached():
@@ -230,6 +248,11 @@ def test_allowed_values_array_string_returns_scalar():
     assert idx.allowed_values("Labels") == "SCALAR"
 
 
+def test_allowed_values_user_returns_user():
+    idx = _make_index({"a": _user_field("Assignee")})
+    assert idx.allowed_values("Assignee") == "USER"
+
+
 def test_allowed_for_type_unknown_tag_raises():
     idx = _make_index({"f": _str_field("F")})
     with pytest.raises(ValueError, match="Unknown"):
@@ -325,6 +348,29 @@ def test_enveloped_unknown_tag_raises():
     idx = _make_index({"f": _str_field("F")})
     with pytest.raises(ValueError, match="Unknown"):
         idx._enveloped("v", ("bogus",))
+
+
+def test_enveloped_user_returns_id_dict():
+    user_ids = {"Alice Example": "abc123"}
+    envelope_fns = {"user": lambda v, ft: {"id": user_ids[v]}}
+    idx = IssueFieldIndex(
+        _make_session(_createmeta({"a": _user_field("Assignee")})),
+        "P", "T",
+        envelope_fns=envelope_fns,
+    )
+    assert idx._enveloped("Alice Example", ("user",)) == {"id": "abc123"}
+
+
+def test_enveloped_user_missing_raises():
+    def envelope_user(value, field_type):
+        raise ValueError(f"User {value!r} not found")
+    idx = IssueFieldIndex(
+        _make_session(_createmeta({"a": _user_field("Assignee")})),
+        "P", "T",
+        envelope_fns={"user": envelope_user},
+    )
+    with pytest.raises(ValueError, match="not found"):
+        idx._enveloped("Nobody Real", ("user",))
 
 
 # ---------------------------------------------------------------------------

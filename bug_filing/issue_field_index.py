@@ -47,6 +47,8 @@ class IssueFieldIndex:
         if meta.get("allowedValues"):
             keys = [k for k in self._IDENTIFIER_KEYS if k in meta["allowedValues"][0]]
             return ("choice", keys)
+        if meta["schema"].get("type") == "user" or meta["schema"].get("items") == "user":
+            return ("user",)
         if meta["schema"].get("custom", "").endswith(":textarea") or meta["schema"].get("system") in self._ADF_SYSTEMS:
             return ("adf",)
         return ("string",)
@@ -159,6 +161,8 @@ class IssueFieldIndex:
             return "SCALAR"
         if tag == "adf":
             return "ADF"
+        if tag == "user":
+            return "USER"
         raise ValueError(f"Unknown field type: {tag!r}")
 
     @staticmethod

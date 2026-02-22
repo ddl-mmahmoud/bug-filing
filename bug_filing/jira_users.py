@@ -48,3 +48,15 @@ def get_jira_user_ids(session):
         for user in sorted(jira_user_ids.keys(), key=str.lower)
     }
     return _jira_user_ids_cache
+
+
+def make_user_envelope_fn(session):
+    user_ids = get_jira_user_ids(session)
+
+    def envelope_user(value, field_type):
+        account_id = user_ids.get(value)
+        if not account_id:
+            raise ValueError(f"User {value!r} not found in Jira user directory")
+        return {"id": account_id}
+
+    return envelope_user
