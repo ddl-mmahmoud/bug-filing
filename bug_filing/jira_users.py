@@ -30,7 +30,12 @@ def get_jira_user_ids(session):
         batch_jira_user_ids = {
             user["displayName"]: user["accountId"]
             for user in raw_batch
-            if user.get("displayName") and user.get("accountId")
+            if (
+                user.get("displayName")
+                and user.get("accountId")
+                and user["active"]
+                and user["accountType"] == "atlassian"
+            )
         }
         jira_user_ids.update(batch_jira_user_ids)
         offset += limit
