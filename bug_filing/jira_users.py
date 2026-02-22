@@ -1,8 +1,11 @@
 import json
 import logging
+import os
+import tempfile
 
 from bug_filing.jira_session import JIRA_BASE_URL
 
+_CACHE_PATH = os.path.join(tempfile.gettempdir(), "jira_users_cache.json")
 
 # Simple module-level cache
 _jira_user_ids_cache = None
@@ -11,6 +14,12 @@ _jira_user_ids_cache = None
 def get_jira_user_ids(session):
     global _jira_user_ids_cache
     if _jira_user_ids_cache is not None:
+        return _jira_user_ids_cache
+
+    if os.path.exists(_CACHE_PATH):
+        logging.info(f"Loading Jira user cache from {_CACHE_PATH}")
+        with open(_CACHE_PATH) as f:
+            _jira_user_ids_cache = json.load(f)
         return _jira_user_ids_cache
 
     offset = 0
@@ -47,6 +56,9 @@ def get_jira_user_ids(session):
         user: jira_user_ids[user]
         for user in sorted(jira_user_ids.keys(), key=str.lower)
     }
+    with open(_CACHE_PATH, "w") as f:
+        json.dump(_jira_user_ids_cache, f)
+    logging.info(f"Saved Jira user cache to {_CACHE_PATH}")
     return _jira_user_ids_cache
 
 
