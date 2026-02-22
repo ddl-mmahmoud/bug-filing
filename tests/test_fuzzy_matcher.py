@@ -3,23 +3,23 @@ from bug_filing.fuzzy_matcher import FuzzyMatcher
 
 
 # ---------------------------------------------------------------------------
-# _sanitize
+# sanitize
 # ---------------------------------------------------------------------------
 
 def test_sanitize_lowercases():
-    assert FuzzyMatcher._sanitize("HELLO") == "hello"
+    assert FuzzyMatcher.sanitize("HELLO") == "hello"
 
 
 def test_sanitize_strips_special_chars():
-    assert FuzzyMatcher._sanitize("Hello, World!") == "hello world"
+    assert FuzzyMatcher.sanitize("Hello, World!") == "hello world"
 
 
 def test_sanitize_collapses_whitespace():
-    assert FuzzyMatcher._sanitize("  foo   bar  ") == "foo bar"
+    assert FuzzyMatcher.sanitize("  foo   bar  ") == "foo bar"
 
 
 def test_sanitize_strips_punctuation_mid_word():
-    assert FuzzyMatcher._sanitize("it's") == "its"
+    assert FuzzyMatcher.sanitize("it's") == "its"
 
 
 # ---------------------------------------------------------------------------

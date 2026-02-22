@@ -3,6 +3,7 @@ import logging
 import os
 import tempfile
 
+from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.jira_session import JIRA_BASE_URL
 
 _CACHE_PATH = os.path.join(tempfile.gettempdir(), "jira_users_cache.json")
@@ -37,7 +38,7 @@ def get_jira_user_ids(session):
 
         raw_batch = json.loads(response.text)
         batch_jira_user_ids = {
-            user["displayName"]: user["accountId"]
+            FuzzyMatcher.sanitize(user["displayName"]): user["accountId"]
             for user in raw_batch
             if (
                 user.get("displayName")
@@ -66,7 +67,7 @@ def make_user_envelope_fn(session):
     user_ids = get_jira_user_ids(session)
 
     def envelope_user(value, field_type):
-        account_id = user_ids.get(value)
+        account_id = user_ids.get(FuzzyMatcher.sanitize(value))
         if not account_id:
             raise ValueError(f"User {value!r} not found in Jira user directory")
         return {"id": account_id}

@@ -3,13 +3,13 @@ import re
 
 class FuzzyMatcher:
     @staticmethod
-    def _sanitize(s):
+    def sanitize(s):
         s = re.sub(r'[^a-zA-Z0-9\s]', '', s).lower()
         return re.sub(r'\s+', ' ', s).strip()
 
     @staticmethod
     def _tokenize(s):
-        return FuzzyMatcher._sanitize(s).split()
+        return FuzzyMatcher.sanitize(s).split()
 
     def __init__(self, strings):
         self._originals = list(strings)
@@ -19,7 +19,7 @@ class FuzzyMatcher:
         self._original_to_collapsed = {}
         for orig in self._originals:
             tokens = self._tokenize(orig)
-            sanitized = self._sanitize(orig)
+            sanitized = self.sanitize(orig)
             self._original_to_tokens[orig] = tokens
             self._original_to_sanitized[orig] = sanitized
             self._original_to_collapsed[orig] = sanitized.replace(' ', '')
@@ -28,7 +28,7 @@ class FuzzyMatcher:
 
     def lookup(self, s):
         query_tokens = self._tokenize(s)
-        collapsed_query = self._sanitize(s).replace(' ', '')
+        collapsed_query = self.sanitize(s).replace(' ', '')
 
         matched = set()
         for qt in query_tokens:
@@ -62,7 +62,7 @@ class FuzzyMatcher:
         if len(matched) > 1:
             # Further prefer candidates whose full sanitized form starts with the sanitized query,
             # or whose collapsed form starts with the collapsed query
-            sanitized_query = self._sanitize(s)
+            sanitized_query = self.sanitize(s)
             full_prefix = {
                 orig for orig in matched
                 if self._original_to_sanitized[orig].startswith(sanitized_query)
