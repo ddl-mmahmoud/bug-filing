@@ -94,6 +94,7 @@ def validate_ticket_yaml(index, yaml_string):
 
     resolved = {}        # field_name -> raw value from YAML
     ambiguous_fields = {}
+    unknown_fields = []
 
     for yaml_key, value in data.items():
         matches = field_matcher.lookup(str(yaml_key))
@@ -101,7 +102,8 @@ def validate_ticket_yaml(index, yaml_string):
             resolved[matches[0]] = value
         elif len(matches) > 1:
             ambiguous_fields[yaml_key] = matches
-        # len == 0: unrecognised field; silently ignored
+        else:
+            unknown_fields.append(yaml_key)
 
     def _is_blank(value):
         return not value or value == [None]
@@ -122,7 +124,7 @@ def validate_ticket_yaml(index, yaml_string):
                 if len(canonicals) != 1:
                     ambiguous_values.setdefault(field_name, {})[str(v)] = matches
 
-    if not (missing_fields or ambiguous_fields or ambiguous_values):
+    if not (missing_fields or ambiguous_fields or ambiguous_values or unknown_fields):
         return {"ok": True}
 
     errors = {"ok": False}
@@ -132,6 +134,8 @@ def validate_ticket_yaml(index, yaml_string):
         errors["ambiguous_fields"] = ambiguous_fields
     if ambiguous_values:
         errors["ambiguous_values"] = ambiguous_values
+    if unknown_fields:
+        errors["unknown_fields"] = unknown_fields
     return errors
 
 
