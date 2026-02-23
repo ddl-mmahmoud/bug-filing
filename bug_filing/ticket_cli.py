@@ -239,8 +239,10 @@ def main():
         _apply_credential_overrides(args)
         _check_required_env_vars()
         _COMMANDS[args.subcommand](args)
+        return 0
+
     except (ValueError, RuntimeError) as e:
-        raise
+        return 1
 
 
 if __name__ == "__main__":
