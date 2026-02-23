@@ -242,6 +242,7 @@ def main():
         return 0
 
     except (ValueError, RuntimeError) as e:
+        print(f"Error: {e}", file=sys.stderr)
         return 1
 
 
