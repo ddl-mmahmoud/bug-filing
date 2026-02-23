@@ -27,6 +27,8 @@ import json
 import os
 import sys
 
+import yaml
+
 from bug_filing.issue_field_index import IssueFieldIndex
 from bug_filing.jira_session import JIRA_BASE_URL, JIRA_ISSUE_URL, jira_requests_session
 from bug_filing.jira_users import make_user_envelope_fn
@@ -67,11 +69,11 @@ def _build_parser():
     # ------------------------------------------------------------------ #
     # Shared arguments                                                     #
     # ------------------------------------------------------------------ #
-    def add_common(p):
-        p.add_argument("--project", required=True, metavar="KEY",
-                       help="Jira project key (e.g. DOM).")
-        p.add_argument("--issuetype", required=True, metavar="NAME",
-                       help="Issue type name (e.g. Bug).")
+    def add_common(p, required=True):
+        p.add_argument("--project", required=required, default=None, metavar="KEY",
+                       help="Jira project key (e.g. DOM). For validate/submit, may be read from the YAML instead.")
+        p.add_argument("--issuetype", required=required, default=None, metavar="NAME",
+                       help="Issue type name (e.g. Bug). For validate/submit, may be read from the YAML instead.")
 
     # ------------------------------------------------------------------ #
     # template                                                             #
@@ -80,7 +82,7 @@ def _build_parser():
         "template",
         help="Emit a YAML template for the given project and issue type.",
     )
-    add_common(p_template)
+    add_common(p_template, required=True)
     verbosity = p_template.add_mutually_exclusive_group()
     verbosity.add_argument(
         "--minimal", action="store_true", default=False,
@@ -98,7 +100,7 @@ def _build_parser():
         "validate",
         help="Validate a YAML ticket read from STDIN.",
     )
-    add_common(p_validate)
+    add_common(p_validate, required=False)
 
     # ------------------------------------------------------------------ #
     # submit                                                               #
@@ -107,7 +109,7 @@ def _build_parser():
         "submit",
         help="Validate and file a YAML ticket from STDIN as a Jira issue.",
     )
-    add_common(p_submit)
+    add_common(p_submit, required=False)
     p_submit.add_argument(
         "--dry-run", action="store_true", default=False,
         help="Emit the JSON payload instead of submitting to Jira.",
@@ -140,6 +142,40 @@ def _check_required_env_vars():
         )
 
 
+def _extract_yaml_defaults(yaml_text, args):
+    """
+    If --project or --issuetype were omitted, attempt to read them from the
+    YAML text.  The expected YAML keys are 'project' (the project key, e.g.
+    'DOM') and 'issue_type' or 'issuetype' (the issue type name, e.g. 'Bug').
+    """
+    if args.project is not None and args.issuetype is not None:
+        return
+    try:
+        data = yaml.safe_load(yaml_text)
+    except yaml.YAMLError:
+        return
+    if not isinstance(data, dict):
+        return
+    if args.project is None:
+        args.project = data.get("project")
+    if args.issuetype is None:
+        args.issuetype = data.get("issue_type") or data.get("issuetype")
+
+
+def _require_project_and_issuetype(args):
+    """Raise a clear error if project or issuetype are still unset."""
+    missing = []
+    if not args.project:
+        missing.append("--project (or 'project' key in YAML)")
+    if not args.issuetype:
+        missing.append("--issuetype (or 'issue_type' key in YAML)")
+    if missing:
+        raise RuntimeError(
+            "the following required arguments are missing:\n"
+            + "\n".join(f"  {m}" for m in missing)
+        )
+
+
 def _make_index(args):
     session = jira_requests_session()
     envelope_fns = {"user": make_user_envelope_fn(session)}
@@ -152,8 +188,10 @@ def _cmd_template(args):
 
 
 def _cmd_validate(args):
-    index = _make_index(args)
     yaml_text = sys.stdin.read()
+    _extract_yaml_defaults(yaml_text, args)
+    _require_project_and_issuetype(args)
+    index = _make_index(args)
     result = validate_ticket_yaml(index, yaml_text)
     print(json.dumps(result, indent=2))
     if result != {"ok": True}:
@@ -161,10 +199,12 @@ def _cmd_validate(args):
 
 
 def _cmd_submit(args):
+    yaml_text = sys.stdin.read()
+    _extract_yaml_defaults(yaml_text, args)
+    _require_project_and_issuetype(args)
     session = jira_requests_session()
     envelope_fns = {"user": make_user_envelope_fn(session)}
     index = IssueFieldIndex(session, args.project, args.issuetype, envelope_fns=envelope_fns)
-    yaml_text = sys.stdin.read()
 
     result = validate_ticket_yaml(index, yaml_text)
     if result != {"ok": True}:
