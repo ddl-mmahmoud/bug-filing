@@ -6,7 +6,8 @@ Very vibe coded.
 ## Usage
 
 ```
-usage: ticket-yaml [-h] [--jira-username EMAIL] [--jira-password TOKEN]
+usage: ticket-yaml [-h] [--jira-url URL] [--jira-username EMAIL]
+                   [--jira-password TOKEN]
                    {template,validate,submit} ...
 
 YAML-based Jira ticket authoring tool.
@@ -22,9 +23,10 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
 
-credential overrides:
+access overrides:
   Each of these overrides the corresponding environment variable. If neither is set the tool will exit with an error.
 
+  --jira-url URL        Overrides JIRA_URL
   --jira-username EMAIL
                         Overrides JIRA_API_USERNAME.
   --jira-password TOKEN
@@ -41,6 +43,7 @@ submit     Validate a YAML ticket from STDIN and file it as a Jira issue.
 
 Required environment variables
 -------------------------------
+  JIRA_URL
   JIRA_API_USERNAME
   JIRA_API_PASSWORD
 
