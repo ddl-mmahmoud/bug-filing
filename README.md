@@ -5,6 +5,7 @@ Very vibe coded.
 
 ## Usage
 
+```
 usage: ticket-yaml [-h] [--jira-username EMAIL] [--jira-password TOKEN]
                    {template,validate,submit} ...
 
@@ -49,3 +50,4 @@ Example usage
   ticket-yaml validate --project DOM --issuetype Bug < my-ticket.yaml
   ticket-yaml submit   --project DOM --issuetype Bug < my-ticket.yaml
   ticket-yaml submit   --project DOM --issuetype Bug --dry-run < my-ticket.yaml
+```
