@@ -1,4 +1,6 @@
 import json
+import os
+import time
 from unittest.mock import MagicMock
 
 import pytest
@@ -111,6 +113,34 @@ def test_file_cache_populates_memory_cache(cache_path):
         json.dump({"Cached Sprint": 99}, f)
     get_jira_sprints(MagicMock())
     assert jira_sprints_module._jira_sprints_cache == {"Cached Sprint": 99}
+
+
+def test_expired_file_cache_triggers_api_fetch(cache_path):
+    with open(cache_path, "w") as f:
+        json.dump({"Old Sprint": 0}, f)
+    two_days_ago = time.time() - 2 * 24 * 60 * 60
+    os.utime(cache_path, (two_days_ago, two_days_ago))
+
+    session = _make_session(
+        _boards_page([_board(1)]),
+        _sprints_page([_sprint(10, "New Sprint", origin_board_id=1)]),
+    )
+    result = get_jira_sprints(session)
+    assert "New Sprint" in result
+    assert "Old Sprint" not in result
+    session.request.assert_called()
+
+
+def test_fresh_file_cache_is_not_expired(cache_path):
+    with open(cache_path, "w") as f:
+        json.dump({"Fresh Sprint": 99}, f)
+    twelve_hours_ago = time.time() - 12 * 60 * 60
+    os.utime(cache_path, (twelve_hours_ago, twelve_hours_ago))
+
+    session = MagicMock()
+    result = get_jira_sprints(session)
+    assert result == {"Fresh Sprint": 99}
+    session.request.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

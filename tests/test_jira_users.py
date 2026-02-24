@@ -1,4 +1,6 @@
 import json
+import os
+import time
 from unittest.mock import MagicMock
 
 import pytest
@@ -93,6 +95,31 @@ def test_file_cache_populates_memory_cache(cache_path, monkeypatch):
         json.dump({"Bob Jones": "bbb"}, f)
     get_jira_user_ids(MagicMock())
     assert jira_users_module._jira_user_ids_cache == {"Bob Jones": "bbb"}
+
+
+def test_expired_file_cache_triggers_api_fetch(cache_path):
+    with open(cache_path, "w") as f:
+        json.dump({"Old User": "zzz"}, f)
+    eight_days_ago = time.time() - 8 * 24 * 60 * 60
+    os.utime(cache_path, (eight_days_ago, eight_days_ago))
+
+    session = _make_session([_active_atlassian("New User", "nnn")])
+    result = get_jira_user_ids(session)
+    assert "New User" in result
+    assert "Old User" not in result
+    session.request.assert_called()
+
+
+def test_fresh_file_cache_is_not_expired(cache_path):
+    with open(cache_path, "w") as f:
+        json.dump({"Fresh User": "fff"}, f)
+    six_days_ago = time.time() - 6 * 24 * 60 * 60
+    os.utime(cache_path, (six_days_ago, six_days_ago))
+
+    session = MagicMock()
+    result = get_jira_user_ids(session)
+    assert result == {"Fresh User": "fff"}
+    session.request.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

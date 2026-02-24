@@ -2,12 +2,14 @@ import json
 import logging
 import os
 import tempfile
+import time
 
 from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.issue_field_index import FieldTypeHandler
 from bug_filing.jira_session import jira_base_url
 
 _CACHE_PATH = os.path.join(tempfile.gettempdir(), "jira_users_cache.json")
+_CACHE_TTL = 7 * 24 * 60 * 60  # 1 week
 
 # Simple module-level cache
 _jira_user_ids_cache = None
@@ -19,10 +21,13 @@ def get_jira_user_ids(session):
         return _jira_user_ids_cache
 
     if os.path.exists(_CACHE_PATH):
-        logging.info(f"Loading Jira user cache from {_CACHE_PATH}")
-        with open(_CACHE_PATH) as f:
-            _jira_user_ids_cache = json.load(f)
-        return _jira_user_ids_cache
+        age = time.time() - os.path.getmtime(_CACHE_PATH)
+        if age < _CACHE_TTL:
+            logging.info(f"Loading Jira user cache from {_CACHE_PATH}")
+            with open(_CACHE_PATH) as f:
+                _jira_user_ids_cache = json.load(f)
+            return _jira_user_ids_cache
+        logging.info(f"Jira user cache expired ({age / 3600:.1f}h old), re-fetching")
 
     offset = 0
     limit = 1000

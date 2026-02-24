@@ -2,12 +2,14 @@ import json
 import logging
 import os
 import tempfile
+import time
 
 from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.issue_field_index import FieldTypeHandler
 from bug_filing.jira_session import jira_base_url
 
 _CACHE_PATH = os.path.join(tempfile.gettempdir(), "jira_sprints_cache.json")
+_CACHE_TTL = 24 * 60 * 60  # 1 day
 
 # Simple module-level cache: {sprint_name: sprint_id}
 _jira_sprints_cache = None
@@ -19,10 +21,13 @@ def get_jira_sprints(session):
         return _jira_sprints_cache
 
     if os.path.exists(_CACHE_PATH):
-        logging.info(f"Loading Jira sprint cache from {_CACHE_PATH}")
-        with open(_CACHE_PATH) as f:
-            _jira_sprints_cache = json.load(f)
-        return _jira_sprints_cache
+        age = time.time() - os.path.getmtime(_CACHE_PATH)
+        if age < _CACHE_TTL:
+            logging.info(f"Loading Jira sprint cache from {_CACHE_PATH}")
+            with open(_CACHE_PATH) as f:
+                _jira_sprints_cache = json.load(f)
+            return _jira_sprints_cache
+        logging.info(f"Jira sprint cache expired ({age / 3600:.1f}h old), re-fetching")
 
     # 1. Fetch all boards (paginate; page size capped at 50 by the API)
     boards = []
