@@ -11,9 +11,7 @@ dependencies = [
     "pytest>=9.0.2",
     "pyyaml>=6.0.3",
     "requests",
-    "testrail-api",
 ]
 
 [project.scripts]
-create-ticket = "bug_filing.create_ticket:main"
 ticket-yaml = "bug_filing.ticket_cli:main"

@@ -11,7 +11,6 @@ dependencies = [
     { name = "pytest" },
     { name = "pyyaml" },
     { name = "requests" },
-    { name = "testrail-api" },
 ]
 
 [package.metadata]
@@ -20,7 +19,6 @@ requires-dist = [
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "requests" },
-    { name = "testrail-api" },
 ]
 
 [[package]]
@@ -252,18 +250,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c9/74/b3ff8e6c8446842c3f5c837e9c3dfcfe2018ea6ecef224c710c85ef728f4/requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf", size = 134517, upload-time = "2025-08-18T20:46:02.573Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl", hash = "sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6", size = 64738, upload-time = "2025-08-18T20:46:00.542Z" },
-]
-
-[[package]]
-name = "testrail-api"
-version = "1.13.6"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d1/bb/5a12a8cb876edc300f9a21f94d4ab79e0380aab48466560263bff8ffda84/testrail_api-1.13.6.tar.gz", hash = "sha256:e9ade5aa08f8a98b6aad03d8e3c8295ad09f8880978ac2c822637668dce45cc8", size = 43111, upload-time = "2026-01-16T12:51:48.751Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/90/0d/876ddca3da3a735262865c05e01dd93288811c19bcca3f9ad13c9860d885/testrail_api-1.13.6-py3-none-any.whl", hash = "sha256:5bd623cb6190059e4e1cab9727914890243b7a2f01e6abdf8f1bb7ed9d591b6a", size = 20537, upload-time = "2026-01-16T12:51:47.518Z" },
 ]
 
 [[package]]
