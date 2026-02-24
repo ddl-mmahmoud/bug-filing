@@ -3,6 +3,8 @@ import logging
 import os
 import tempfile
 
+from bug_filing.fuzzy_matcher import FuzzyMatcher
+from bug_filing.issue_field_index import FieldTypeHandler
 from bug_filing.jira_session import JIRA_BASE_URL
 
 _CACHE_PATH = os.path.join(tempfile.gettempdir(), "jira_users_cache.json")
@@ -62,13 +64,26 @@ def get_jira_user_ids(session):
     return _jira_user_ids_cache
 
 
-def make_user_envelope_fn(session):
-    user_ids = get_jira_user_ids(session)
+class UserHandler(FieldTypeHandler):
+    """Type handler for Jira user and array-of-user fields."""
 
-    def envelope_user(value, field_type):
-        account_id = user_ids.get(value)
+    tag = "user"
+
+    def __init__(self, user_ids):
+        self._user_ids = user_ids  # {display_name: account_id}
+
+    def detect(self, meta):
+        schema = meta["schema"]
+        return schema.get("type") == "user" or schema.get("items") == "user"
+
+    def matcher(self, meta):
+        return FuzzyMatcher(self._user_ids.keys())
+
+    def envelope(self, value, meta):
+        account_id = self._user_ids.get(value)
         if not account_id:
             raise ValueError(f"User {value!r} not found in Jira user directory")
         return {"id": account_id}
 
-    return envelope_user
+    def allowed(self, meta):
+        return "USER"

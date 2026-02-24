@@ -2,14 +2,124 @@ from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.jira_session import JIRA_BASE_URL
 
 
+_IDENTIFIER_KEYS = ["value", "key", "name", "id"]
+_ADF_SYSTEMS = {"description", "environment"}
+
+
+class FieldTypeHandler:
+    """
+    Base class for field type handlers.  Each subclass encapsulates detection,
+    value matching, enveloping, and allowed-value listing for one Jira field type.
+
+    Subclasses must set the ``tag`` class attribute and implement ``detect`` and
+    ``envelope``.  ``matcher``, ``canonical``, and ``allowed`` have sensible
+    defaults (no matcher, identity canonical, None allowed-list).
+    """
+
+    tag = None  # short string identifier, e.g. "choice", "user", "sprint"
+
+    def detect(self, meta: dict) -> bool:
+        """Return True if this handler should be used for the given field metadata."""
+        raise NotImplementedError
+
+    def matcher(self, meta: dict):
+        """Return a FuzzyMatcher over valid value strings, or None."""
+        return None
+
+    def envelope(self, value, meta: dict):
+        """Convert a single resolved value to its Jira API representation."""
+        raise NotImplementedError
+
+    def canonical(self, value: str, meta: dict) -> str:
+        """Return the canonical form of a value string (for ambiguity resolution)."""
+        return value
+
+    def allowed(self, meta: dict):
+        """Return a list of valid value strings, or a sentinel string such as 'SCALAR'."""
+        return None
+
+
+class ChoiceHandler(FieldTypeHandler):
+    tag = "choice"
+
+    def detect(self, meta):
+        return bool(meta.get("allowedValues"))
+
+    def _id_keys(self, meta):
+        return [k for k in _IDENTIFIER_KEYS if k in meta["allowedValues"][0]]
+
+    def matcher(self, meta):
+        return FuzzyMatcher(self.allowed(meta))
+
+    def envelope(self, value, meta):
+        if isinstance(value, dict):
+            raise ValueError("Expected scalar for choice field, got dict")
+        return {self._id_keys(meta)[0]: value}
+
+    def canonical(self, value, meta):
+        id_keys = self._id_keys(meta)
+        for entry in meta.get("allowedValues", []):
+            if any(entry.get(k) == value for k in id_keys):
+                for k in id_keys:
+                    if k in entry:
+                        return entry[k]
+        return value
+
+    def allowed(self, meta):
+        id_keys = self._id_keys(meta)
+        return [av[k] for av in meta["allowedValues"] for k in id_keys if k in av]
+
+
+class AdfHandler(FieldTypeHandler):
+    tag = "adf"
+
+    def detect(self, meta):
+        return (meta["schema"].get("custom", "").endswith(":textarea") or
+                meta["schema"].get("system") in _ADF_SYSTEMS)
+
+    def envelope(self, value, meta):
+        if isinstance(value, str):
+            from bug_filing.adf import from_markdown
+            return from_markdown(value)
+        if not isinstance(value, dict):
+            raise ValueError(f"Expected ADF doc or markdown string, got {type(value).__name__}")
+        return value
+
+    def allowed(self, meta):
+        return "ADF"
+
+
+class StringHandler(FieldTypeHandler):
+    tag = "string"
+
+    def detect(self, meta):
+        return True  # catch-all; must be last in the handler list
+
+    def envelope(self, value, meta):
+        if isinstance(value, dict):
+            raise ValueError("Expected plain string, got dict")
+        return value
+
+    def allowed(self, meta):
+        return "SCALAR"
+
+
+_BUILTIN_HANDLERS = [ChoiceHandler(), AdfHandler(), StringHandler()]
+
+
 class IssueFieldIndex:
     """
     Queries the Jira createmeta endpoint for a given project and issue type,
     caches the raw field definitions, and provides a name-to-key index for
     looking up a field's API key by its human-readable name.
+
+    ``type_handlers`` is an optional list of :class:`FieldTypeHandler` instances
+    that are consulted before the built-in handlers (ChoiceHandler, AdfHandler,
+    StringHandler).  Register external handlers such as UserHandler or
+    SprintHandler here.
     """
 
-    def __init__(self, session, project, issuetype, envelope_fns=None, type_matchers=None):
+    def __init__(self, session, project, issuetype, type_handlers=None):
         url = f"{JIRA_BASE_URL}/rest/api/3/issue/createmeta"
         params = {
             "projectKeys": project,
@@ -30,36 +140,47 @@ class IssueFieldIndex:
         self.fields = issuetypes[0]["fields"]
         self.name_to_key = {meta["name"]: key for key, meta in self.fields.items()}
         self.required = [meta["name"] for meta in self.fields.values() if meta["required"]]
-        self._types = None
+
+        self._handlers = list(type_handlers or []) + _BUILTIN_HANDLERS
+        self._resolved = {}   # field_name -> (is_array: bool, handler: FieldTypeHandler)
+        self._matchers = {}   # field_name -> FuzzyMatcher | None
         self._unambiguous = None
-        self._matchers = {}
-        self._type_matchers = dict(type_matchers or {})
-        self._envelope_fns = {
-            "adf": self._envelope_adf,
-            "string": self._envelope_string,
-            "choice": self._envelope_choice,
-            **(envelope_fns or {}),
-        }
 
-    _IDENTIFIER_KEYS = ["value", "key", "name", "id"]
-    _ADF_SYSTEMS = {"description", "environment"}
+    # ------------------------------------------------------------------
+    # Internal: per-field handler resolution
+    # ------------------------------------------------------------------
 
-    def _item_type(self, meta):
-        if meta.get("allowedValues"):
-            keys = [k for k in self._IDENTIFIER_KEYS if k in meta["allowedValues"][0]]
-            return ("choice", keys)
-        if meta["schema"].get("type") == "user" or meta["schema"].get("items") == "user":
-            return ("user",)
-        if meta["schema"].get("custom", "").endswith(":gh-sprint"):
-            return ("sprint",)
-        if meta["schema"].get("custom", "").endswith(":textarea") or meta["schema"].get("system") in self._ADF_SYSTEMS:
-            return ("adf",)
-        return ("string",)
+    def _resolve(self, field_name):
+        """Return (is_array, handler) for the given field, cached after first call."""
+        if field_name not in self._resolved:
+            meta = self.fields[self.name_to_key[field_name]]
+            is_array = meta["schema"]["type"] == "array"
+            for handler in self._handlers:
+                if handler.detect(meta):
+                    self._resolved[field_name] = (is_array, handler)
+                    break
+            else:
+                raise ValueError(f"No handler matched field {field_name!r}")
+        return self._resolved[field_name]
 
-    def _field_type(self, meta):
-        if meta["schema"]["type"] == "array":
-            return ("array", self._item_type(meta))
-        return self._item_type(meta)
+    def _meta(self, field_name):
+        return self.fields[self.name_to_key[field_name]]
+
+    # ------------------------------------------------------------------
+    # Public type-query helpers
+    # ------------------------------------------------------------------
+
+    def field_tag(self, field_name) -> str:
+        """Return the handler tag for this field, e.g. 'choice', 'adf', 'string'."""
+        return self._resolve(field_name)[1].tag
+
+    def field_is_array(self, field_name) -> bool:
+        """Return True if this field expects a list of values."""
+        return self._resolve(field_name)[0]
+
+    # ------------------------------------------------------------------
+    # Required-field helpers
+    # ------------------------------------------------------------------
 
     @property
     def user_required(self):
@@ -75,32 +196,46 @@ class IssueFieldIndex:
                 allowed = meta.get("allowedValues", [])
                 if len(allowed) != 1:
                     continue
-                for k in self._IDENTIFIER_KEYS:
+                for k in _IDENTIFIER_KEYS:
                     if k in allowed[0]:
                         result[meta["name"]] = {k: allowed[0][k]}
                         break
             self._unambiguous = result
         return self._unambiguous
 
-    @property
-    def types(self):
-        if self._types is None:
-            self._types = {meta["name"]: self._field_type(meta) for meta in self.fields.values()}
-        return self._types
-
-    def field(self, name, value):
-        return (self.name_to_key[name], self._enveloped(value, self.types[name]))
+    # ------------------------------------------------------------------
+    # Value matching and enveloping
+    # ------------------------------------------------------------------
 
     def value_matcher(self, field_name):
+        """Return a FuzzyMatcher for this field's valid values, or None."""
         if field_name not in self._matchers:
-            field_type = self.types[field_name]
-            type_tag = field_type[1][0] if field_type[0] == "array" else field_type[0]
-            if type_tag in self._type_matchers:
-                self._matchers[field_name] = self._type_matchers[type_tag]
-            else:
-                av = self.allowed_values(field_name)
-                self._matchers[field_name] = FuzzyMatcher(av) if isinstance(av, list) else None
+            is_array, handler = self._resolve(field_name)
+            self._matchers[field_name] = handler.matcher(self._meta(field_name))
         return self._matchers[field_name]
+
+    def _enveloped(self, value, field_name):
+        is_array, handler = self._resolve(field_name)
+        meta = self._meta(field_name)
+        if is_array:
+            if not isinstance(value, list):
+                raise ValueError(f"Expected a list for array field, got {type(value).__name__}")
+            return [handler.envelope(v, meta) for v in value]
+        if isinstance(value, list):
+            raise ValueError(f"Expected {handler.tag!r}, got a list")
+        return handler.envelope(value, meta)
+
+    def field(self, name, value):
+        return (self.name_to_key[name], self._enveloped(value, name))
+
+    def _canonical_value(self, field_name, value_string):
+        """Return the canonical form of value_string for this field (for ambiguity resolution)."""
+        is_array, handler = self._resolve(field_name)
+        return handler.canonical(value_string, self._meta(field_name))
+
+    # ------------------------------------------------------------------
+    # Fuzzy field/payload construction
+    # ------------------------------------------------------------------
 
     def fuzzy_payload(self, fields):
         result = {}
@@ -131,87 +266,14 @@ class IssueFieldIndex:
 
         return self.field(resolved_name, resolved_value)
 
-    def _canonical_value(self, field_name, value_string):
-        """Return the preferred identifier value for the allowedValues entry that contains value_string."""
-        field_key = self.name_to_key[field_name]
-        meta = self.fields[field_key]
-        field_type = self.types[field_name]
-        if field_type[0] == "choice":
-            id_keys = field_type[1]
-        elif field_type[0] == "array" and field_type[1][0] == "choice":
-            id_keys = field_type[1][1]
-        else:
-            id_keys = None
-        if id_keys is None:
-            return value_string
-        for entry in meta.get("allowedValues", []):
-            if any(entry.get(k) == value_string for k in id_keys):
-                for k in id_keys:
-                    if k in entry:
-                        return entry[k]
-        return value_string
+    # ------------------------------------------------------------------
+    # Allowed values and fields
+    # ------------------------------------------------------------------
 
     def allowed_values(self, field_name):
-        field_key = self.name_to_key[field_name]
-        meta = self.fields[field_key]
-        return self._allowed_for_type(meta, self.types[field_name])
+        """Return a list of valid value strings, or a sentinel ('SCALAR', 'ADF', etc.)."""
+        is_array, handler = self._resolve(field_name)
+        return handler.allowed(self._meta(field_name))
 
     def allowed_fields(self):
         return list(self.name_to_key.keys())
-
-    def _allowed_for_type(self, meta, field_type):
-        tag = field_type[0]
-        if tag == "array":
-            return self._allowed_for_type(meta, field_type[1])
-        if tag == "choice":
-            return [
-                av[k]
-                for av in meta.get("allowedValues", [])
-                for k in field_type[1]
-                if k in av
-            ]
-        if tag == "string":
-            return "SCALAR"
-        if tag == "adf":
-            return "ADF"
-        if tag == "user":
-            return "USER"
-        if tag == "sprint":
-            return "SPRINT"
-        raise ValueError(f"Unknown field type: {tag!r}")
-
-    @staticmethod
-    def _envelope_adf(value, field_type):
-        if isinstance(value, str):
-            from bug_filing.adf import from_markdown
-            return from_markdown(value)
-        if not isinstance(value, dict):
-            raise ValueError(f"Expected ADF doc or markdown string, got {type(value).__name__}")
-        return value
-
-    @staticmethod
-    def _envelope_string(value, field_type):
-        if isinstance(value, dict):
-            raise ValueError(f"Expected plain string, got dict")
-        return value
-
-    @staticmethod
-    def _envelope_choice(value, field_type):
-        if isinstance(value, dict):
-            raise ValueError(f"Expected scalar for choice field, got dict")
-        return {field_type[1][0]: value}
-
-    def _enveloped(self, value, field_type):
-        tag = field_type[0]
-
-        if tag == "array":
-            if not isinstance(value, list):
-                raise ValueError(f"Expected a list for array field, got {type(value).__name__}")
-            return [self._enveloped(v, field_type[1]) for v in value]
-
-        if isinstance(value, list):
-            raise ValueError(f"Expected {tag}, got a list")
-
-        if tag not in self._envelope_fns:
-            raise ValueError(f"Unknown field type: {tag!r}")
-        return self._envelope_fns[tag](value, field_type)

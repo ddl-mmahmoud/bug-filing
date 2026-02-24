@@ -31,9 +31,21 @@ def _make_index(
     idx = MagicMock()
     idx.allowed_fields.return_value = list(allowed_fields or [])
     idx.user_required = list(user_required or [])
-    idx.types = dict(types or {})
     idx.unambiguous = dict(unambiguous or {})
     idx.name_to_key = dict(name_to_key or {})
+
+    # Translate old-style type tuples to field_tag / field_is_array
+    _types = dict(types or {})
+
+    def _field_tag(name):
+        t = _types.get(name, ("string",))
+        return t[1][0] if t[0] == "array" else t[0]
+
+    def _field_is_array(name):
+        return _types.get(name, ("string",))[0] == "array"
+
+    idx.field_tag.side_effect = _field_tag
+    idx.field_is_array.side_effect = _field_is_array
 
     if allowed_values_map is not None:
         idx.allowed_values.side_effect = lambda n: allowed_values_map.get(n, "SCALAR")
@@ -290,13 +302,14 @@ def test_validate_valid_yaml_returns_ok():
     assert result == {"ok": True}
 
 
-def test_validate_extra_unrecognised_fields_ignored():
+def test_validate_extra_unrecognised_fields_reported():
     idx = _make_index(
         allowed_fields=["Summary"],
         user_required=["Summary"],
     )
     result = validate_ticket_yaml(idx, "summary: Hello\nunknown_field: ignored")
-    assert result == {"ok": True}
+    assert result["ok"] is False
+    assert "unknown_field" in result.get("unknown_fields", [])
 
 
 # ---------------------------------------------------------------------------

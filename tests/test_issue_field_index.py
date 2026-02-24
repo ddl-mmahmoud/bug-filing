@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
-from bug_filing.issue_field_index import IssueFieldIndex
+from bug_filing.issue_field_index import IssueFieldIndex, FieldTypeHandler
 
 
 # ---------------------------------------------------------------------------
@@ -55,8 +55,20 @@ def _array_user_field(name, *, required=False):
     return {"name": name, "required": required, "schema": {"type": "array", "items": "user"}}
 
 
-def _make_index(fields):
-    return IssueFieldIndex(_make_session(_createmeta(fields)), "P", "T")
+def _sprint_field(name, *, required=False):
+    return {
+        "name": name,
+        "required": required,
+        "schema": {"type": "array", "items": "json",
+                   "custom": "com.pyxis.greenhopper.jira:gh-sprint"},
+    }
+
+
+def _make_index(fields, type_handlers=None):
+    return IssueFieldIndex(
+        _make_session(_createmeta(fields)), "P", "T",
+        type_handlers=type_handlers,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -88,63 +100,66 @@ def test_init_populates_name_to_key_and_required():
 
 
 # ---------------------------------------------------------------------------
-# _item_type / _field_type → types property
+# field_tag / field_is_array
 # ---------------------------------------------------------------------------
 
-def test_types_plain_string():
+def test_field_tag_plain_string():
     idx = _make_index({"f": _str_field("My Field")})
-    assert idx.types["My Field"] == ("string",)
+    assert idx.field_tag("My Field") == "string"
 
 
-def test_types_adf_by_system_description():
+def test_field_tag_adf_by_system_description():
     idx = _make_index({"f": _str_field("Description", system="description")})
-    assert idx.types["Description"] == ("adf",)
+    assert idx.field_tag("Description") == "adf"
 
 
-def test_types_adf_by_system_environment():
+def test_field_tag_adf_by_system_environment():
     idx = _make_index({"f": _str_field("Environment", system="environment")})
-    assert idx.types["Environment"] == ("adf",)
+    assert idx.field_tag("Environment") == "adf"
 
 
-def test_types_adf_by_custom_textarea():
+def test_field_tag_adf_by_custom_textarea():
     idx = _make_index({"f": _str_field("Notes", custom="com.atlassian:textarea")})
-    assert idx.types["Notes"] == ("adf",)
+    assert idx.field_tag("Notes") == "adf"
 
 
-def test_types_choice():
+def test_field_tag_choice():
     av = [{"id": "1", "name": "High"}]
     idx = _make_index({"f": _choice_field("Priority", av)})
-    tag, keys = idx.types["Priority"]
-    assert tag == "choice"
-    assert "name" in keys and "id" in keys
+    assert idx.field_tag("Priority") == "choice"
 
 
-def test_types_array_of_choice():
+def test_field_tag_array_of_choice():
     av = [{"id": "1", "name": "Frontend"}]
     idx = _make_index({"f": _array_field("Components", allowed=av)})
-    tag, inner = idx.types["Components"]
-    assert tag == "array"
-    assert inner[0] == "choice"
+    assert idx.field_tag("Components") == "choice"
+    assert idx.field_is_array("Components") is True
 
 
-def test_types_array_of_string():
+def test_field_tag_array_of_string():
     idx = _make_index({"f": _array_field("Labels")})
-    assert idx.types["Labels"] == ("array", ("string",))
+    assert idx.field_tag("Labels") == "string"
+    assert idx.field_is_array("Labels") is True
 
 
-def test_types_user():
-    idx = _make_index({"f": _user_field("Assignee")})
-    assert idx.types["Assignee"] == ("user",)
+def test_field_is_array_false_for_scalar():
+    idx = _make_index({"f": _str_field("Summary")})
+    assert idx.field_is_array("Summary") is False
 
 
-def test_types_array_of_user():
-    idx = _make_index({"f": _array_user_field("Watchers")})
-    assert idx.types["Watchers"] == ("array", ("user",))
+def test_field_tag_user_field_with_handler():
+    from bug_filing.jira_users import UserHandler
+    handler = UserHandler({"Alice": "aaa"})
+    idx = _make_index({"a": _user_field("Assignee")}, type_handlers=[handler])
+    assert idx.field_tag("Assignee") == "user"
 
 
-def test_types_is_cached():
-    idx = _make_index({"f": _str_field("F")})
-    assert idx.types is idx.types
+def test_field_tag_array_user_field_with_handler():
+    from bug_filing.jira_users import UserHandler
+    handler = UserHandler({"Alice": "aaa"})
+    idx = _make_index({"w": _array_user_field("Watchers")}, type_handlers=[handler])
+    assert idx.field_tag("Watchers") == "user"
+    assert idx.field_is_array("Watchers") is True
 
 
 # ---------------------------------------------------------------------------
@@ -215,7 +230,7 @@ def test_allowed_fields_returns_all_names():
 
 
 # ---------------------------------------------------------------------------
-# allowed_values / _allowed_for_type
+# allowed_values
 # ---------------------------------------------------------------------------
 
 def test_allowed_values_string_returns_scalar():
@@ -249,14 +264,10 @@ def test_allowed_values_array_string_returns_scalar():
 
 
 def test_allowed_values_user_returns_user():
-    idx = _make_index({"a": _user_field("Assignee")})
+    from bug_filing.jira_users import UserHandler
+    handler = UserHandler({"Alice": "aaa"})
+    idx = _make_index({"a": _user_field("Assignee")}, type_handlers=[handler])
     assert idx.allowed_values("Assignee") == "USER"
-
-
-def test_allowed_for_type_unknown_tag_raises():
-    idx = _make_index({"f": _str_field("F")})
-    with pytest.raises(ValueError, match="Unknown"):
-        idx._allowed_for_type({}, ("unknown_tag",))
 
 
 # ---------------------------------------------------------------------------
@@ -281,96 +292,98 @@ def test_value_matcher_is_cached():
     assert idx.value_matcher("Priority") is idx.value_matcher("Priority")
 
 
+def test_value_matcher_returns_fuzzy_matcher_for_user():
+    from bug_filing.jira_users import UserHandler
+    handler = UserHandler({"Alice Smith": "aaa"})
+    idx = _make_index({"a": _user_field("Assignee")}, type_handlers=[handler])
+    matcher = idx.value_matcher("Assignee")
+    assert matcher is not None
+    assert matcher.lookup("alice") == ["Alice Smith"]
+
+
 # ---------------------------------------------------------------------------
-# _enveloped
+# _enveloped  (field_name-based signature)
 # ---------------------------------------------------------------------------
 
 def test_enveloped_string_plain_value():
     idx = _make_index({"f": _str_field("F")})
-    assert idx._enveloped("hello", ("string",)) == "hello"
+    assert idx._enveloped("hello", "F") == "hello"
 
 
 def test_enveloped_string_rejects_dict():
     idx = _make_index({"f": _str_field("F")})
     with pytest.raises(ValueError, match="plain string"):
-        idx._enveloped({"k": "v"}, ("string",))
+        idx._enveloped({"k": "v"}, "F")
 
 
 def test_enveloped_choice_wraps_in_first_key():
-    idx = _make_index({"f": _str_field("F")})
-    assert idx._enveloped("High", ("choice", ["name", "id"])) == {"name": "High"}
+    av = [{"name": "High", "id": "1"}]
+    idx = _make_index({"f": _choice_field("F", av)})
+    assert idx._enveloped("High", "F") == {"name": "High"}
 
 
 def test_enveloped_choice_rejects_dict():
-    idx = _make_index({"f": _str_field("F")})
+    av = [{"name": "High"}]
+    idx = _make_index({"f": _choice_field("F", av)})
     with pytest.raises(ValueError, match="scalar"):
-        idx._enveloped({"name": "High"}, ("choice", ["name", "id"]))
+        idx._enveloped({"name": "High"}, "F")
 
 
 def test_enveloped_adf_passthrough_dict():
-    idx = _make_index({"f": _str_field("F")})
+    idx = _make_index({"f": _str_field("F", system="description")})
     doc = {"version": 1, "type": "doc", "content": []}
-    assert idx._enveloped(doc, ("adf",)) == doc
+    assert idx._enveloped(doc, "F") == doc
 
 
 def test_enveloped_adf_string_renders_markdown():
-    idx = _make_index({"f": _str_field("F")})
-    result = idx._enveloped("**bold**", ("adf",))
+    idx = _make_index({"f": _str_field("F", system="description")})
+    result = idx._enveloped("**bold**", "F")
     assert result["type"] == "doc"
     assert result["version"] == 1
 
 
 def test_enveloped_adf_rejects_non_string_non_dict():
-    idx = _make_index({"f": _str_field("F")})
+    idx = _make_index({"f": _str_field("F", system="description")})
     with pytest.raises(ValueError, match="ADF"):
-        idx._enveloped(42, ("adf",))
+        idx._enveloped(42, "F")
 
 
 def test_enveloped_array_wraps_each_element():
-    idx = _make_index({"f": _str_field("F")})
-    result = idx._enveloped(["a", "b"], ("array", ("string",)))
-    assert result == ["a", "b"]
+    idx = _make_index({"f": _array_field("F")})
+    assert idx._enveloped(["a", "b"], "F") == ["a", "b"]
 
 
 def test_enveloped_array_requires_list():
-    idx = _make_index({"f": _str_field("F")})
+    idx = _make_index({"f": _array_field("F")})
     with pytest.raises(ValueError, match="list"):
-        idx._enveloped("not a list", ("array", ("string",)))
+        idx._enveloped("not a list", "F")
 
 
 def test_enveloped_list_for_non_array_raises():
     idx = _make_index({"f": _str_field("F")})
     with pytest.raises(ValueError):
-        idx._enveloped(["a", "b"], ("string",))
-
-
-def test_enveloped_unknown_tag_raises():
-    idx = _make_index({"f": _str_field("F")})
-    with pytest.raises(ValueError, match="Unknown"):
-        idx._enveloped("v", ("bogus",))
+        idx._enveloped(["a", "b"], "F")
 
 
 def test_enveloped_user_returns_id_dict():
-    user_ids = {"Alice Example": "abc123"}
-    envelope_fns = {"user": lambda v, ft: {"id": user_ids[v]}}
-    idx = IssueFieldIndex(
-        _make_session(_createmeta({"a": _user_field("Assignee")})),
-        "P", "T",
-        envelope_fns=envelope_fns,
+    from bug_filing.jira_users import UserHandler
+    handler = UserHandler({"Alice Example": "abc123"})
+    idx = _make_index(
+        {"a": _user_field("Assignee")},
+        type_handlers=[handler],
     )
-    assert idx._enveloped("Alice Example", ("user",)) == {"id": "abc123"}
+    assert idx._enveloped("Alice Example", "Assignee") == {"id": "abc123"}
 
 
 def test_enveloped_user_missing_raises():
-    def envelope_user(value, field_type):
-        raise ValueError(f"User {value!r} not found")
-    idx = IssueFieldIndex(
-        _make_session(_createmeta({"a": _user_field("Assignee")})),
-        "P", "T",
-        envelope_fns={"user": envelope_user},
+    from bug_filing.jira_users import UserHandler
+    handler = UserHandler({})
+    idx = _make_index(
+        {"a": _user_field("Assignee")},
+        type_handlers=[handler],
     )
     with pytest.raises(ValueError, match="not found"):
-        idx._enveloped("Nobody Real", ("user",))
+        idx._enveloped("Nobody Real", "Assignee")
 
 
 # ---------------------------------------------------------------------------
@@ -467,7 +480,6 @@ def test_canonical_value_returns_input_when_not_found():
 
 
 def test_canonical_value_string_field_returns_value_unchanged():
-    # string field → id_keys is None → pass-through
     idx = _make_index({"s": _str_field("Summary")})
     assert idx._canonical_value("Summary", "anything") == "anything"
 
@@ -476,3 +488,27 @@ def test_canonical_value_array_field():
     av = [{"name": "Frontend", "id": "1"}]
     idx = _make_index({"c": _array_field("Components", allowed=av)})
     assert idx._canonical_value("Components", "Frontend") == "Frontend"
+
+
+# ---------------------------------------------------------------------------
+# Custom FieldTypeHandler registration
+# ---------------------------------------------------------------------------
+
+def test_custom_handler_takes_priority_over_builtins():
+    """A custom handler registered before the built-ins is consulted first."""
+    class AlwaysMatchHandler(FieldTypeHandler):
+        tag = "custom"
+
+        def detect(self, meta):
+            return True
+
+        def envelope(self, value, meta):
+            return {"custom": value}
+
+        def allowed(self, meta):
+            return "CUSTOM"
+
+    handler = AlwaysMatchHandler()
+    idx = _make_index({"f": _str_field("F")}, type_handlers=[handler])
+    assert idx.field_tag("F") == "custom"
+    assert idx._enveloped("hello", "F") == {"custom": "hello"}

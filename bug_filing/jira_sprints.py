@@ -4,6 +4,7 @@ import os
 import tempfile
 
 from bug_filing.fuzzy_matcher import FuzzyMatcher
+from bug_filing.issue_field_index import FieldTypeHandler
 from bug_filing.jira_session import JIRA_BASE_URL
 
 _CACHE_PATH = os.path.join(tempfile.gettempdir(), "jira_sprints_cache.json")
@@ -74,18 +75,25 @@ def get_jira_sprints(session):
     return _jira_sprints_cache
 
 
-def make_sprint_envelope_fn(session):
-    sprints = get_jira_sprints(session)
-    matcher = FuzzyMatcher(sprints.keys())
+class SprintHandler(FieldTypeHandler):
+    """Type handler for Jira sprint (gh-sprint) array fields."""
 
-    def envelope_sprint(value, field_type):
-        candidates = matcher.lookup(value)
-        if len(candidates) == 1:
-            return {"id": sprints[candidates[0]]}
-        if len(candidates) == 0:
+    tag = "sprint"
+
+    def __init__(self, sprints):
+        self._sprints = sprints  # {sprint_name: sprint_id}
+
+    def detect(self, meta):
+        return meta["schema"].get("custom", "").endswith(":gh-sprint")
+
+    def matcher(self, meta):
+        return FuzzyMatcher(self._sprints.keys())
+
+    def envelope(self, value, meta):
+        sprint_id = self._sprints.get(value)
+        if not sprint_id:
             raise ValueError(f"Sprint {value!r} not found among active/future sprints")
-        raise ValueError(
-            f"Sprint {value!r} is ambiguous; matched: {[c for c in candidates]}"
-        )
+        return {"id": sprint_id}
 
-    return envelope_sprint
+    def allowed(self, meta):
+        return "SPRINT"

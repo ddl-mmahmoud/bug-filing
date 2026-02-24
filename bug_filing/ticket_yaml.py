@@ -37,13 +37,20 @@ def ticket_template(index, minimal=False, maximal=False):
     lines = []
     for field_name in fields:
         key = _yaml_key(field_name)
-        field_type = index.types[field_name]
-        tag = field_type[0]
+        tag = index.field_tag(field_name)
+        is_array = index.field_is_array(field_name)
 
         if not minimal:
             lines.append(f"# {field_name}")
 
-        if tag == "adf":
+        if is_array:
+            if not minimal and tag == "choice":
+                av = index.allowed_values(field_name)
+                lines.append(f"# options: {_format_options(av)}")
+            lines.append(f"{key}:")
+            lines.append(f"  -")
+
+        elif tag == "adf":
             lines.append(f"{key}: |")
             lines.append(f"  Enter markdown content here")
 
@@ -53,16 +60,7 @@ def ticket_template(index, minimal=False, maximal=False):
                 lines.append(f"# options: {_format_options(av)}")
             lines.append(f"{key}:")
 
-        elif tag == "array":
-            if not minimal:
-                inner = field_type[1]
-                if inner[0] == "choice":
-                    av = index.allowed_values(field_name)
-                    lines.append(f"# options: {_format_options(av)}")
-            lines.append(f"{key}:")
-            lines.append(f"  -")
-
-        else:  # string
+        else:  # string, user, sprint, etc.
             lines.append(f"{key}:")
 
         if not minimal:
