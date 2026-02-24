@@ -3,8 +3,8 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 
-JIRA_BASE_URL = "https://dominodatalab.atlassian.net"
-JIRA_ISSUE_URL = "https://dominodatalab.atlassian.net/rest/api/3/issue"
+def jira_base_url():
+    return os.environ["JIRA_URL"].rstrip('/')
 
 
 def jira_requests_session():

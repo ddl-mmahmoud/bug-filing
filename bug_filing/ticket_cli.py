@@ -11,6 +11,7 @@ submit     Validate a YAML ticket from STDIN and file it as a Jira issue.
 
 Required environment variables
 -------------------------------
+  JIRA_URL
   JIRA_API_USERNAME
   JIRA_API_PASSWORD
 
@@ -30,7 +31,7 @@ import sys
 import yaml
 
 from bug_filing.issue_field_index import IssueFieldIndex
-from bug_filing.jira_session import JIRA_BASE_URL, JIRA_ISSUE_URL, jira_requests_session
+from bug_filing.jira_session import jira_base_url, jira_requests_session
 from bug_filing.jira_users import get_jira_user_ids, UserHandler
 from bug_filing.jira_sprints import get_jira_sprints, SprintHandler
 from bug_filing.ticket_yaml import build_ticket_payload, ticket_template, validate_ticket_yaml
@@ -45,12 +46,18 @@ def _build_parser():
     )
 
     # ------------------------------------------------------------------ #
-    # Credential overrides (fall back to environment variables)           #
+    # Access overrides (fall back to environment variables)              #
     # ------------------------------------------------------------------ #
     creds = parser.add_argument_group(
-        "credential overrides",
+        "access overrides",
         "Each of these overrides the corresponding environment variable. "
         "If neither is set the tool will exit with an error.",
+    )
+    creds.add_argument(
+        "--jira-url",
+        default=None,
+        metavar="URL",
+        help="Overrides JIRA_URL",
     )
     creds.add_argument(
         "--jira-username",
@@ -119,9 +126,10 @@ def _build_parser():
     return parser
 
 
-def _apply_credential_overrides(args):
-    """Copy credential CLI args into environment variables."""
+def _apply_access_overrides(args):
+    """Copy access CLI args into environment variables."""
     overrides = {
+        "jira_url":      "JIRA_URL",
         "jira_username": "JIRA_API_USERNAME",
         "jira_password": "JIRA_API_PASSWORD",
     }
@@ -133,11 +141,11 @@ def _apply_credential_overrides(args):
 
 def _check_required_env_vars():
     """Verify that the mandatory Jira environment variables are present."""
-    required = ["JIRA_API_USERNAME", "JIRA_API_PASSWORD"]
+    required = ["JIRA_URL", "JIRA_API_USERNAME", "JIRA_API_PASSWORD"]
     missing = [v for v in required if not os.environ.get(v)]
     if missing:
         raise RuntimeError(
-            "the following required credentials are not set "
+            "the following required access vars are not set "
             "(provide them as environment variables or CLI arguments):\n"
             + "\n".join(f"  {v}" for v in missing)
         )
@@ -220,10 +228,10 @@ def _cmd_submit(args):
         print(json.dumps(payload, indent=2))
         return
 
-    response = session.post(JIRA_ISSUE_URL, json=payload)
+    response = session.post(f"{jira_base_url()}/rest/api/3/issue", json=payload)
     if response.status_code == 201:
         key = response.json()["key"]
-        print(f"Created: {JIRA_BASE_URL}/browse/{key}")
+        print(f"Created: {jira_base_url()}/browse/{key}")
     else:
         raise RuntimeError(f"Jira API error {response.status_code}: {response.text}")
 
@@ -239,7 +247,7 @@ def main():
     parser = _build_parser()
     args = parser.parse_args()
     try:
-        _apply_credential_overrides(args)
+        _apply_access_overrides(args)
         _check_required_env_vars()
         _COMMANDS[args.subcommand](args)
         return 0

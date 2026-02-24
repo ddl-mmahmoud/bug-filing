@@ -1,5 +1,5 @@
 from bug_filing.fuzzy_matcher import FuzzyMatcher
-from bug_filing.jira_session import JIRA_BASE_URL
+from bug_filing.jira_session import jira_base_url
 
 
 _IDENTIFIER_KEYS = ["value", "key", "name", "id"]
@@ -120,7 +120,7 @@ class IssueFieldIndex:
     """
 
     def __init__(self, session, project, issuetype, type_handlers=None):
-        url = f"{JIRA_BASE_URL}/rest/api/3/issue/createmeta"
+        url = f"{jira_base_url()}/rest/api/3/issue/createmeta"
         params = {
             "projectKeys": project,
             "issuetypeNames": issuetype,

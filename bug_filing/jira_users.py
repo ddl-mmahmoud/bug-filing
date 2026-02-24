@@ -5,7 +5,7 @@ import tempfile
 
 from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.issue_field_index import FieldTypeHandler
-from bug_filing.jira_session import JIRA_BASE_URL
+from bug_filing.jira_session import jira_base_url
 
 _CACHE_PATH = os.path.join(tempfile.gettempdir(), "jira_users_cache.json")
 
@@ -32,7 +32,7 @@ def get_jira_user_ids(session):
         params = {"startAt": offset, "maxResults": limit}
         response = session.request(
             "GET",
-            url=f"{JIRA_BASE_URL}/rest/api/3/users/search",
+            url=f"{jira_base_url()}/rest/api/3/users/search",
             params=params,
         )
         logging.info(f"jira get users offset {offset}")

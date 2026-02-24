@@ -5,7 +5,7 @@ import tempfile
 
 from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.issue_field_index import FieldTypeHandler
-from bug_filing.jira_session import JIRA_BASE_URL
+from bug_filing.jira_session import jira_base_url
 
 _CACHE_PATH = os.path.join(tempfile.gettempdir(), "jira_sprints_cache.json")
 
@@ -30,7 +30,7 @@ def get_jira_sprints(session):
     while True:
         response = session.request(
             "GET",
-            url=f"{JIRA_BASE_URL}/rest/agile/1.0/board",
+            url=f"{jira_base_url()}/rest/agile/1.0/board",
             params={"maxResults": 50, "startAt": start},
         )
         batch = json.loads(response.text)
@@ -48,7 +48,7 @@ def get_jira_sprints(session):
             continue
         response = session.request(
             "GET",
-            url=f"{JIRA_BASE_URL}/rest/agile/1.0/board/{board['id']}/sprint",
+            url=f"{jira_base_url()}/rest/agile/1.0/board/{board['id']}/sprint",
             params={"state": "active,future", "maxResults": 50},
         )
         if response.status_code != 200:
