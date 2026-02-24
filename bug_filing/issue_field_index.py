@@ -9,7 +9,7 @@ class IssueFieldIndex:
     looking up a field's API key by its human-readable name.
     """
 
-    def __init__(self, session, project, issuetype, envelope_fns=None, value_matchers=None):
+    def __init__(self, session, project, issuetype, envelope_fns=None, type_matchers=None):
         url = f"{JIRA_BASE_URL}/rest/api/3/issue/createmeta"
         params = {
             "projectKeys": project,
@@ -32,7 +32,8 @@ class IssueFieldIndex:
         self.required = [meta["name"] for meta in self.fields.values() if meta["required"]]
         self._types = None
         self._unambiguous = None
-        self._matchers = dict(value_matchers or {})
+        self._matchers = {}
+        self._type_matchers = dict(type_matchers or {})
         self._envelope_fns = {
             "adf": self._envelope_adf,
             "string": self._envelope_string,
@@ -92,8 +93,13 @@ class IssueFieldIndex:
 
     def value_matcher(self, field_name):
         if field_name not in self._matchers:
-            av = self.allowed_values(field_name)
-            self._matchers[field_name] = FuzzyMatcher(av) if isinstance(av, list) else None
+            field_type = self.types[field_name]
+            type_tag = field_type[1][0] if field_type[0] == "array" else field_type[0]
+            if type_tag in self._type_matchers:
+                self._matchers[field_name] = self._type_matchers[type_tag]
+            else:
+                av = self.allowed_values(field_name)
+                self._matchers[field_name] = FuzzyMatcher(av) if isinstance(av, list) else None
         return self._matchers[field_name]
 
     def fuzzy_payload(self, fields):
