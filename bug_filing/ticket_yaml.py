@@ -21,10 +21,12 @@ def ticket_template(index, minimal=False, maximal=False):
     """
     Generate a YAML template string for a ticket.
 
-    By default, only user-required fields are included. With maximal=True,
-    all fields except unambiguous ones are included. ADF fields use block
-    scalar (|) format. Choice fields include a comment listing valid options.
-    The YAML keys are underscore_case versions of the human-readable field names.
+    By default, user-required fields are included plus any unambiguous fields
+    (required fields with exactly one allowed value) pre-filled with that value.
+    With maximal=True, all fields are included; unambiguous ones are still
+    pre-filled. ADF fields use block scalar (|) format. Choice fields include a
+    comment listing valid options.  The YAML keys are underscore_case versions
+    of the human-readable field names.
 
     If minimal=True, comments and inter-field blank lines are omitted.
     """
@@ -32,40 +34,49 @@ def ticket_template(index, minimal=False, maximal=False):
         all_fields = [f for f in index.allowed_fields()]
         fields = sorted(all_fields, key=lambda f: (0 if f == "Summary" else 1))
     else:
-        fields = sorted(index.user_required, key=lambda f: (0 if f == "Summary" else 1, f))
+        user_fields = sorted(index.user_required, key=lambda f: (0 if f == "Summary" else 1, f))
+        fields = user_fields + sorted(index.unambiguous)
 
     lines = []
     for field_name in fields:
         key = _yaml_key(field_name)
-        tag = index.field_tag(field_name)
-        is_array = index.field_is_array(field_name)
 
         if not minimal:
             lines.append(f"# {field_name}")
 
-        if is_array:
-            if not minimal and tag == "choice":
-                av = index.allowed_values(field_name)
-                lines.append(f"# options: {_format_options(av)}")
-            lines.append(f"{key}:")
-            lines.append(f"  -")
+        if field_name in index.unambiguous:
+            value = next(iter(index.unambiguous[field_name].values()))
+            lines.append(f"{key}: {value}")
 
-        elif tag == "adf":
-            lines.append(f"{key}: |")
-            lines.append(f"  Enter markdown content here")
+        else:
+            tag = index.field_tag(field_name)
+            is_array = index.field_is_array(field_name)
 
-        elif tag == "choice":
-            if not minimal:
-                av = index.allowed_values(field_name)
-                lines.append(f"# options: {_format_options(av)}")
-            lines.append(f"{key}:")
+            if is_array:
+                if not minimal and tag == "choice":
+                    av = index.allowed_values(field_name)
+                    lines.append(f"# options: {_format_options(av)}")
+                lines.append(f"{key}:")
+                lines.append(f"  -")
 
-        else:  # string, user, sprint, etc.
-            lines.append(f"{key}:")
+            elif tag == "adf":
+                lines.append(f"{key}: |")
+                lines.append(f"  Enter markdown content here")
+
+            elif tag == "choice":
+                if not minimal:
+                    av = index.allowed_values(field_name)
+                    lines.append(f"# options: {_format_options(av)}")
+                lines.append(f"{key}:")
+
+            else:  # string, user, sprint, etc.
+                lines.append(f"{key}:")
 
         if not minimal:
             lines.append("")
 
+    if minimal and lines:
+        lines.append("")
     return "\n".join(lines)
 
 

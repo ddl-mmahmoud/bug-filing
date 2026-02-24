@@ -172,6 +172,48 @@ def test_template_summary_sorted_first_in_maximal():
     assert output.index("summary:") < output.index("priority:")
 
 
+def test_template_default_includes_unambiguous_fields():
+    idx = _make_index(
+        user_required=["Summary"],
+        types={"Summary": ("string",)},
+        unambiguous={"Issue Type": {"name": "Bug"}},
+    )
+    output = ticket_template(idx)
+    assert "issue_type: Bug" in output
+
+
+def test_template_unambiguous_fields_appear_after_user_required():
+    idx = _make_index(
+        user_required=["Summary"],
+        types={"Summary": ("string",)},
+        unambiguous={"Issue Type": {"name": "Bug"}},
+    )
+    output = ticket_template(idx)
+    assert output.index("summary:") < output.index("issue_type:")
+
+
+def test_template_unambiguous_prefilled_in_maximal():
+    idx = _make_index(
+        allowed_fields=["Summary", "Issue Type"],
+        types={"Summary": ("string",), "Issue Type": ("choice", ["name"])},
+        unambiguous={"Issue Type": {"name": "Bug"}},
+    )
+    output = ticket_template(idx, maximal=True)
+    assert "issue_type: Bug" in output
+
+
+def test_template_unambiguous_prefilled_in_minimal():
+    idx = _make_index(
+        user_required=["Summary"],
+        types={"Summary": ("string",)},
+        unambiguous={"Issue Type": {"name": "Bug"}, "Project": {"key": "DOM"}},
+    )
+    output = ticket_template(idx, minimal=True)
+    assert "issue_type: Bug" in output
+    assert "project: DOM" in output
+    assert "#" not in output
+
+
 # ---------------------------------------------------------------------------
 # ticket_template — field types
 # ---------------------------------------------------------------------------
@@ -249,6 +291,22 @@ def test_template_minimal_omits_blank_lines():
     )
     output = ticket_template(idx, minimal=True)
     assert "\n\n" not in output
+
+
+def test_template_minimal_ends_with_newline():
+    idx = _make_index(
+        user_required=["Summary"],
+        types={"Summary": ("string",)},
+    )
+    assert ticket_template(idx, minimal=True).endswith("\n")
+
+
+def test_template_non_minimal_ends_with_newline():
+    idx = _make_index(
+        user_required=["Summary"],
+        types={"Summary": ("string",)},
+    )
+    assert ticket_template(idx, minimal=False).endswith("\n")
 
 
 def test_template_non_minimal_includes_blank_lines():
