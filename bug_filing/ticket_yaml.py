@@ -81,6 +81,8 @@ def validate_ticket_yaml(index, yaml_string):
       - "missing_fields":   list of required field names absent from the YAML
       - "ambiguous_fields": {yaml_key: [candidate field names]}
       - "ambiguous_values": {field_name: {raw_value: [candidate values]}}
+      - "invalid_values":   {field_name: error string} for envelope-backed fields
+                            (sprint, user) where the lookup failed
     """
     try:
         data = yaml.safe_load(yaml_string)
@@ -111,20 +113,27 @@ def validate_ticket_yaml(index, yaml_string):
     missing_fields = [f for f in index.user_required if _is_blank(resolved.get(f))]
 
     ambiguous_values = {}
+    invalid_values = {}
     for field_name, value in resolved.items():
         if _is_blank(value):
             continue
         matcher = index.value_matcher(field_name)
-        if matcher is None:
-            continue
-        for v in (value if isinstance(value, list) else [value]):
-            matches = matcher.lookup(str(v))
-            if len(matches) != 1:
-                canonicals = {index._canonical_value(field_name, m) for m in matches}
-                if len(canonicals) != 1:
-                    ambiguous_values.setdefault(field_name, {})[str(v)] = matches
+        if matcher is not None:
+            for v in (value if isinstance(value, list) else [value]):
+                matches = matcher.lookup(str(v))
+                if len(matches) != 1:
+                    canonicals = {index._canonical_value(field_name, m) for m in matches}
+                    if len(canonicals) != 1:
+                        ambiguous_values.setdefault(field_name, {})[str(v)] = matches
+        else:
+            # Envelope-backed type (sprint, user, …): trial-run the envelope so
+            # that lookup errors surface here rather than only at build time.
+            try:
+                index.field(field_name, value)
+            except ValueError as e:
+                invalid_values[field_name] = str(e)
 
-    if not (missing_fields or ambiguous_fields or ambiguous_values or unknown_fields):
+    if not (missing_fields or ambiguous_fields or ambiguous_values or unknown_fields or invalid_values):
         return {"ok": True}
 
     errors = {"ok": False}
@@ -136,6 +145,8 @@ def validate_ticket_yaml(index, yaml_string):
         errors["ambiguous_values"] = ambiguous_values
     if unknown_fields:
         errors["unknown_fields"] = unknown_fields
+    if invalid_values:
+        errors["invalid_values"] = invalid_values
     return errors
 
 

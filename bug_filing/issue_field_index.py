@@ -9,7 +9,7 @@ class IssueFieldIndex:
     looking up a field's API key by its human-readable name.
     """
 
-    def __init__(self, session, project, issuetype, envelope_fns=None):
+    def __init__(self, session, project, issuetype, envelope_fns=None, value_matchers=None):
         url = f"{JIRA_BASE_URL}/rest/api/3/issue/createmeta"
         params = {
             "projectKeys": project,
@@ -32,7 +32,7 @@ class IssueFieldIndex:
         self.required = [meta["name"] for meta in self.fields.values() if meta["required"]]
         self._types = None
         self._unambiguous = None
-        self._matchers = {}
+        self._matchers = dict(value_matchers or {})
         self._envelope_fns = {
             "adf": self._envelope_adf,
             "string": self._envelope_string,
@@ -49,6 +49,8 @@ class IssueFieldIndex:
             return ("choice", keys)
         if meta["schema"].get("type") == "user" or meta["schema"].get("items") == "user":
             return ("user",)
+        if meta["schema"].get("custom", "").endswith(":gh-sprint"):
+            return ("sprint",)
         if meta["schema"].get("custom", "").endswith(":textarea") or meta["schema"].get("system") in self._ADF_SYSTEMS:
             return ("adf",)
         return ("string",)
@@ -128,7 +130,12 @@ class IssueFieldIndex:
         field_key = self.name_to_key[field_name]
         meta = self.fields[field_key]
         field_type = self.types[field_name]
-        id_keys = field_type[1] if field_type[0] == "choice" else field_type[1][1] if field_type[0] == "array" else None
+        if field_type[0] == "choice":
+            id_keys = field_type[1]
+        elif field_type[0] == "array" and field_type[1][0] == "choice":
+            id_keys = field_type[1][1]
+        else:
+            id_keys = None
         if id_keys is None:
             return value_string
         for entry in meta.get("allowedValues", []):
@@ -163,6 +170,8 @@ class IssueFieldIndex:
             return "ADF"
         if tag == "user":
             return "USER"
+        if tag == "sprint":
+            return "SPRINT"
         raise ValueError(f"Unknown field type: {tag!r}")
 
     @staticmethod

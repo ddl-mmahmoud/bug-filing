@@ -31,7 +31,9 @@ import yaml
 
 from bug_filing.issue_field_index import IssueFieldIndex
 from bug_filing.jira_session import JIRA_BASE_URL, JIRA_ISSUE_URL, jira_requests_session
+from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.jira_users import make_user_envelope_fn
+from bug_filing.jira_sprints import get_jira_sprints, make_sprint_envelope_fn
 from bug_filing.ticket_yaml import build_ticket_payload, ticket_template, validate_ticket_yaml
 
 
@@ -178,8 +180,14 @@ def _require_project_and_issuetype(args):
 
 def _make_index(args):
     session = jira_requests_session()
-    envelope_fns = {"user": make_user_envelope_fn(session)}
-    return IssueFieldIndex(session, args.project, args.issuetype, envelope_fns=envelope_fns)
+    sprints = get_jira_sprints(session)
+    envelope_fns = {
+        "user": make_user_envelope_fn(session),
+        "sprint": make_sprint_envelope_fn(session),
+    }
+    value_matchers = {"Sprint": FuzzyMatcher(sprints.keys())}
+    return IssueFieldIndex(session, args.project, args.issuetype,
+                           envelope_fns=envelope_fns, value_matchers=value_matchers)
 
 
 def _cmd_template(args):
@@ -203,8 +211,14 @@ def _cmd_submit(args):
     _extract_yaml_defaults(yaml_text, args)
     _require_project_and_issuetype(args)
     session = jira_requests_session()
-    envelope_fns = {"user": make_user_envelope_fn(session)}
-    index = IssueFieldIndex(session, args.project, args.issuetype, envelope_fns=envelope_fns)
+    sprints = get_jira_sprints(session)
+    envelope_fns = {
+        "user": make_user_envelope_fn(session),
+        "sprint": make_sprint_envelope_fn(session),
+    }
+    value_matchers = {"Sprint": FuzzyMatcher(sprints.keys())}
+    index = IssueFieldIndex(session, args.project, args.issuetype,
+                            envelope_fns=envelope_fns, value_matchers=value_matchers)
 
     result = validate_ticket_yaml(index, yaml_text)
     if result != {"ok": True}:
