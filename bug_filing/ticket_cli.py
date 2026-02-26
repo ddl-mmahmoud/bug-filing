@@ -135,7 +135,7 @@ def _build_parser():
         help="Interpolate variables into a YAML template read from STDIN.",
     )
     p_hydrate.add_argument(
-        "--variables", required=True, metavar="FILE",
+        "--variables", "--vars", required=True, metavar="FILE",
         help="Path to a YAML file whose values are interpolated into the template.",
     )
 
