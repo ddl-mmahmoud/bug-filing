@@ -20,11 +20,53 @@ def load_variables(path: str) -> dict:
     return data
 
 
-def required_variables(template_text: str) -> list[str]:
-    """Return the variable names referenced in *template_text*, sorted."""
+def required_variables(template_text: str) -> dict:
+    """Return a nested stub dict of every variable referenced in *template_text*.
+
+    Simple references (``{{ foo }}``) produce ``{"foo": None}``.
+    Dotted references (``{{ team.name }}``) produce ``{"team": {"name": None}}``.
+    """
+    from jinja2.nodes import Getattr, Name
+
     env = Environment()
     ast = env.parse(template_text)
-    return sorted(jinja2_meta.find_undeclared_variables(ast))
+    undeclared = jinja2_meta.find_undeclared_variables(ast)
+
+    # Resolve a Getattr chain down to its root Name, returning the full path
+    # as a tuple only when the root is an undeclared variable.
+    def _resolve(node):
+        if isinstance(node, Name):
+            return (node.name,) if node.name in undeclared else None
+        if isinstance(node, Getattr):
+            parent = _resolve(node.node)
+            return parent + (node.attr,) if parent is not None else None
+        return None
+
+    paths = set()
+    names_with_dotted_access = set()
+    for node in ast.find_all(Getattr):
+        path = _resolve(node)
+        if path:
+            paths.add(path)
+            names_with_dotted_access.add(path[0])
+
+    # Add undeclared names that are only ever used as plain references.
+    for name in undeclared - names_with_dotted_access:
+        paths.add((name,))
+
+    # Drop any path that is a strict prefix of a longer path so that
+    # ``{{ a.b.c }}`` doesn't also generate a spurious ``a.b: null`` entry.
+    maximal = {p for p in paths if not any(q != p and q[:len(p)] == p for q in paths)}
+
+    # Build nested dict scaffold from the maximal paths.
+    result: dict = {}
+    for path in sorted(maximal):
+        d = result
+        for part in path[:-1]:
+            d = d.setdefault(part, {})
+        d.setdefault(path[-1], None)
+
+    return result
 
 
 def hydrate(template_text: str, variables: dict) -> str:

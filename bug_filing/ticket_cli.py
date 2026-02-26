@@ -260,7 +260,7 @@ def _cmd_submit(args):
 def _cmd_hydrate(args):
     template_text = sys.stdin.read()
     if args.requirements:
-        stub = {var: None for var in required_variables(template_text)}
+        stub = required_variables(template_text)
         print(yaml.dump(stub, default_flow_style=False), end="")
     else:
         variables = load_variables(args.variables)
