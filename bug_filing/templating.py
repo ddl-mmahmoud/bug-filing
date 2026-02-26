@@ -8,6 +8,7 @@ raise an UndefinedError so mistakes are caught early.
 
 import yaml
 from jinja2 import Environment, StrictUndefined, UndefinedError
+from jinja2 import meta as jinja2_meta
 
 
 def load_variables(path: str) -> dict:
@@ -17,6 +18,13 @@ def load_variables(path: str) -> dict:
     if not isinstance(data, dict):
         raise ValueError(f"Variables file {path!r} must be a YAML mapping")
     return data
+
+
+def required_variables(template_text: str) -> list[str]:
+    """Return the variable names referenced in *template_text*, sorted."""
+    env = Environment()
+    ast = env.parse(template_text)
+    return sorted(jinja2_meta.find_undeclared_variables(ast))
 
 
 def hydrate(template_text: str, variables: dict) -> str:

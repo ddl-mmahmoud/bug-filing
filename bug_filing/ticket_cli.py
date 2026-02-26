@@ -38,7 +38,7 @@ from bug_filing.jira_session import jira_base_url, jira_requests_session
 from bug_filing.jira_users import get_jira_user_ids, UserHandler
 from bug_filing.jira_sprints import get_jira_sprints, SprintHandler
 from bug_filing.ticket_yaml import build_ticket_payload, ticket_template, validate_ticket_yaml
-from bug_filing.templating import hydrate, load_variables
+from bug_filing.templating import hydrate, load_variables, required_variables
 
 
 def _build_parser():
@@ -134,9 +134,14 @@ def _build_parser():
         "hydrate",
         help="Interpolate variables into a YAML template read from STDIN.",
     )
-    p_hydrate.add_argument(
-        "--variables", "--vars", required=True, metavar="FILE",
+    mode = p_hydrate.add_mutually_exclusive_group(required=True)
+    mode.add_argument(
+        "--variables", "--vars", metavar="FILE",
         help="Path to a YAML file whose values are interpolated into the template.",
+    )
+    mode.add_argument(
+        "--requirements", action="store_true", default=False,
+        help="Emit a stub YAML listing the variables the template requires.",
     )
 
     return parser
@@ -254,8 +259,12 @@ def _cmd_submit(args):
 
 def _cmd_hydrate(args):
     template_text = sys.stdin.read()
-    variables = load_variables(args.variables)
-    print(hydrate(template_text, variables), end="")
+    if args.requirements:
+        stub = {var: None for var in required_variables(template_text)}
+        print(yaml.dump(stub, default_flow_style=False), end="")
+    else:
+        variables = load_variables(args.variables)
+        print(hydrate(template_text, variables), end="")
 
 
 _COMMANDS = {
