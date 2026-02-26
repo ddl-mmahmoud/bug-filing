@@ -87,6 +87,12 @@ def _build_parser():
         p.add_argument("--issuetype", required=required, default=None, metavar="NAME",
                        help="Issue type name (e.g. Bug). For validate/submit, may be read from the YAML instead.")
 
+    def add_infile(p):
+        p.add_argument(
+            "infile", nargs="?", type=argparse.FileType("r"), default=sys.stdin,
+            metavar="FILE", help="Input file (default: stdin).",
+        )
+
     # ------------------------------------------------------------------ #
     # template                                                             #
     # ------------------------------------------------------------------ #
@@ -113,6 +119,7 @@ def _build_parser():
         help="Validate a YAML ticket read from STDIN.",
     )
     add_common(p_validate, required=False)
+    add_infile(p_validate)
 
     # ------------------------------------------------------------------ #
     # submit                                                               #
@@ -126,6 +133,7 @@ def _build_parser():
         "--dry-run", action="store_true", default=False,
         help="Emit the JSON payload instead of submitting to Jira.",
     )
+    add_infile(p_submit)
 
     # ------------------------------------------------------------------ #
     # hydrate                                                              #
@@ -143,6 +151,7 @@ def _build_parser():
         "--requirements", action="store_true", default=False,
         help="Emit a stub YAML listing the variables the template requires.",
     )
+    add_infile(p_hydrate)
 
     return parser
 
@@ -222,7 +231,7 @@ def _cmd_template(args):
 
 
 def _cmd_validate(args):
-    yaml_text = sys.stdin.read()
+    yaml_text = args.infile.read()
     _extract_yaml_defaults(yaml_text, args)
     _require_project_and_issuetype(args)
     _, index = _make_index(args)
@@ -233,7 +242,7 @@ def _cmd_validate(args):
 
 
 def _cmd_submit(args):
-    yaml_text = sys.stdin.read()
+    yaml_text = args.infile.read()
     _extract_yaml_defaults(yaml_text, args)
     _require_project_and_issuetype(args)
     session, index = _make_index(args)
@@ -258,7 +267,7 @@ def _cmd_submit(args):
 
 
 def _cmd_hydrate(args):
-    template_text = sys.stdin.read()
+    template_text = args.infile.read()
     if args.requirements:
         stub = required_variables(template_text)
         print(yaml.dump(stub, default_flow_style=False), end="")
