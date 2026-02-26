@@ -35,6 +35,7 @@ from bug_filing.jira_session import jira_base_url, jira_requests_session
 from bug_filing.jira_users import get_jira_user_ids, UserHandler
 from bug_filing.jira_sprints import get_jira_sprints, SprintHandler
 from bug_filing.ticket_yaml import build_ticket_payload, ticket_template, validate_ticket_yaml
+from bug_filing.templating import hydrate, load_variables
 
 
 def _build_parser():
@@ -121,6 +122,18 @@ def _build_parser():
     p_submit.add_argument(
         "--dry-run", action="store_true", default=False,
         help="Emit the JSON payload instead of submitting to Jira.",
+    )
+
+    # ------------------------------------------------------------------ #
+    # hydrate                                                              #
+    # ------------------------------------------------------------------ #
+    p_hydrate = sub.add_parser(
+        "hydrate",
+        help="Interpolate variables into a YAML template read from STDIN.",
+    )
+    p_hydrate.add_argument(
+        "--variables", required=True, metavar="FILE",
+        help="Path to a YAML file whose values are interpolated into the template.",
     )
 
     return parser
@@ -236,11 +249,21 @@ def _cmd_submit(args):
         raise RuntimeError(f"Jira API error {response.status_code}: {response.text}")
 
 
+def _cmd_hydrate(args):
+    template_text = sys.stdin.read()
+    variables = load_variables(args.variables)
+    print(hydrate(template_text, variables), end="")
+
+
 _COMMANDS = {
     "template": _cmd_template,
     "validate": _cmd_validate,
     "submit":   _cmd_submit,
+    "hydrate":  _cmd_hydrate,
 }
+
+# Subcommands that do not require a Jira connection.
+_NO_JIRA_COMMANDS = {"hydrate"}
 
 
 def main():
@@ -248,7 +271,8 @@ def main():
     args = parser.parse_args()
     try:
         _apply_access_overrides(args)
-        _check_required_env_vars()
+        if args.subcommand not in _NO_JIRA_COMMANDS:
+            _check_required_env_vars()
         _COMMANDS[args.subcommand](args)
         return 0
 
