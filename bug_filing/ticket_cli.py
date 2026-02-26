@@ -8,6 +8,8 @@ template   Emit a YAML template for the given project / issue type on STDOUT.
 validate   Read a YAML ticket from STDIN and report any errors as JSON.
 submit     Validate a YAML ticket from STDIN and file it as a Jira issue.
            Use --dry-run to emit the JSON payload instead of submitting.
+hydrate    Interpolate variables from a YAML file into a template on STDIN
+           and emit the result on STDOUT.
 
 Required environment variables
 -------------------------------
@@ -21,6 +23,7 @@ Example usage
   ticket-yaml validate --project DOM --issuetype Bug < my-ticket.yaml
   ticket-yaml submit   --project DOM --issuetype Bug < my-ticket.yaml
   ticket-yaml submit   --project DOM --issuetype Bug --dry-run < my-ticket.yaml
+  ticket-yaml hydrate  --variables vars.yaml < my-template.yaml
 """
 
 import argparse
