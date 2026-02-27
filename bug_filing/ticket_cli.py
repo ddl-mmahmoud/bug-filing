@@ -27,6 +27,7 @@ Example usage
 """
 
 import argparse
+import glob
 import json
 import os
 import sys
@@ -151,6 +152,14 @@ def _build_parser():
         "--requirements", action="store_true", default=False,
         help="Emit a stub YAML listing the variables the template requires.",
     )
+    mode.add_argument(
+        "--list", action="store_true", default=False,
+        help="List available templates in the tpl/ directory.",
+    )
+    p_hydrate.add_argument(
+        "--absolute", action="store_true", default=False,
+        help="With --list, print absolute paths instead of tpl/-relative paths.",
+    )
     add_infile(p_hydrate)
 
     return parser
@@ -267,9 +276,17 @@ def _cmd_submit(args):
 
 
 _DEFAULT_VARIABLES_FILE = "default_variables.yaml"
+_TEMPLATES_DIR = "tpl"
 
 
 def _cmd_hydrate(args):
+    if args.list:
+        paths = sorted(glob.glob(os.path.join(_TEMPLATES_DIR, "**", "*"), recursive=True))
+        paths = [p for p in paths if os.path.isfile(p)]
+        for p in paths:
+            print(os.path.abspath(p) if args.absolute else p)
+        return
+
     template_text = args.infile.read()
     if args.requirements:
         stub = required_variables(template_text)
