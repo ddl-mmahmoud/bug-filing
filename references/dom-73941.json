@@ -1,0 +1,982 @@
+{
+    "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations,customfield_12200.requestTypePractice,customfield_13252.properties",
+    "id": "293248",
+    "self": "https://dominodatalab.atlassian.net/rest/api/3/issue/293248",
+    "key": "DOM-74681",
+    "fields": {
+        "customfield_17383": null,
+        "customfield_17382": null,
+        "customfield_19445": "2026-02-23T14:08:00.000-0800",
+        "customfield_17381": null,
+        "customfield_17146": null,
+        "customfield_15881": null,
+        "customfield_15884": null,
+        "customfield_13584": null,
+        "customfield_15885": null,
+        "customfield_17148": null,
+        "customfield_15882": null,
+        "customfield_17147": null,
+        "customfield_15883": null,
+        "customfield_13101": null,
+        "statusCategory": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/statuscategory/4",
+            "id": 4,
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+        },
+        "customfield_13225": null,
+        "customfield_15888": null,
+        "resolution": null,
+        "customfield_15889": null,
+        "customfield_13224": null,
+        "customfield_15886": null,
+        "customfield_13227": null,
+        "customfield_15887": null,
+        "customfield_12800": null,
+        "customfield_10500": null,
+        "customfield_10501": null,
+        "customfield_13217": null,
+        "customfield_12923": null,
+        "customfield_15879": null,
+        "customfield_12929": [],
+        "customfield_21514": null,
+        "customfield_17380": null,
+        "customfield_21513": null,
+        "lastViewed": null,
+        "customfield_17377": null,
+        "customfield_17014": null,
+        "customfield_13450": null,
+        "customfield_13331": null,
+        "customfield_13452": null,
+        "customfield_13451": null,
+        "customfield_17379": null,
+        "customfield_17378": null,
+        "customfield_13332": null,
+        "customfield_13456": null,
+        "customfield_13214": null,
+        "customfield_13213": null,
+        "customfield_15878": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "This field is mandatory. Please follow the guidance "
+                        },
+                        {
+                            "type": "text",
+                            "text": "https://dominodatalab.atlassian.net/wiki/spaces/ENG/pages/2227732517/TEMPLATE+X.Y.Z+Release+Change+Request",
+                            "marks": [
+                                {
+                                    "type": "link",
+                                    "attrs": {
+                                        "href": "https://dominodatalab.atlassian.net/wiki/spaces/ENG/pages/2227732517/TEMPLATE+X.Y.Z+Release+Change+Request"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "____________________________________________________________"
+                        },
+                        {
+                            "type": "hardBreak"
+                        },
+                        {
+                            "type": "text",
+                            "text": "Release dates"
+                        }
+                    ]
+                },
+                {
+                    "type": "bulletList",
+                    "content": [
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "GA date published target - "
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "GA date proposed new target - "
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Features"
+                        }
+                    ]
+                },
+                {
+                    "type": "bulletList",
+                    "content": [
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "Feature 1 - (add Jira link to the Milestone)"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "Feature 1 published target - (add release)"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "Feature 1 proposed new target - (add release)"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Process description "
+                        },
+                        {
+                            "type": "text",
+                            "text": "https://dominodatalab.atlassian.net/wiki/spaces/QMS/pages/edit-v2/2770862139?draftShareId=e79fccc7-441e-4be0-8f79-a7df400f53c6",
+                            "marks": [
+                                {
+                                    "type": "link",
+                                    "attrs": {
+                                        "href": "https://dominodatalab.atlassian.net/wiki/spaces/QMS/pages/edit-v2/2770862139?draftShareId=e79fccc7-441e-4be0-8f79-a7df400f53c6"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "customfield_13216": null,
+        "customfield_13457": null,
+        "customfield_13215": null,
+        "labels": [
+            "not-blocking"
+        ],
+        "customfield_15755": null,
+        "customfield_12910": null,
+        "customfield_12912": null,
+        "customfield_13329": [],
+        "aggregatetimeoriginalestimate": null,
+        "customfield_12913": null,
+        "issuelinks": [],
+        "assignee": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/user?accountId=5efa77f91225f80bb166fc13",
+            "accountId": "5efa77f91225f80bb166fc13",
+            "emailAddress": "redacted-user@dominodatalab.com",
+            "avatarUrls": {
+                "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/48",
+                "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/24",
+                "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/16",
+                "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/32"
+            },
+            "displayName": "Redacted User",
+            "active": true,
+            "timeZone": "America/New_York",
+            "accountType": "atlassian"
+        },
+        "components": [
+            {
+                "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11795",
+                "id": "11795",
+                "name": "Admin - Other"
+            }
+        ],
+        "customfield_17245": null,
+        "customfield_16952": null,
+        "customfield_16951": null,
+        "customfield_16950": null,
+        "customfield_13443": null,
+        "customfield_15866": null,
+        "customfield_13444": null,
+        "customfield_15867": null,
+        "customfield_15865": null,
+        "customfield_16949": null,
+        "customfield_16948": null,
+        "customfield_13316": null,
+        "customfield_12903": null,
+        "customfield_12902": null,
+        "customfield_12905": null,
+        "customfield_12907": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11002",
+            "value": "S2",
+            "id": "11002"
+        },
+        "customfield_17113": null,
+        "subtasks": [],
+        "customfield_13430": null,
+        "reporter": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/user?accountId=5efa77f91225f80bb166fc13",
+            "accountId": "5efa77f91225f80bb166fc13",
+            "emailAddress": "redacted-user@dominodatalab.com",
+            "avatarUrls": {
+                "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/48",
+                "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/24",
+                "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/16",
+                "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/32"
+            },
+            "displayName": "Redacted User",
+            "active": true,
+            "timeZone": "America/New_York",
+            "accountType": "atlassian"
+        },
+        "customfield_13432": null,
+        "customfield_13431": null,
+        "customfield_13315": null,
+        "customfield_13556": null,
+        "customfield_13427": null,
+        "customfield_13429": null,
+        "customfield_13549": null,
+        "customfield_13428": null,
+        "progress": {
+            "progress": 0,
+            "total": 0
+        },
+        "votes": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/issue/DOM-74681/votes",
+            "votes": 0,
+            "hasVoted": false
+        },
+        "worklog": {
+            "startAt": 0,
+            "maxResults": 20,
+            "total": 0,
+            "worklogs": []
+        },
+        "issuetype": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/issuetype/10004",
+            "id": "10004",
+            "description": "A problem which impairs or prevents the functions of the product.",
+            "iconUrl": "https://dominodatalab.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium",
+            "name": "Bug",
+            "subtask": false,
+            "avatarId": 10303,
+            "hierarchyLevel": 0
+        },
+        "customfield_17344": null,
+        "project": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/project/10103",
+            "id": "10103",
+            "key": "DOM",
+            "name": "Domino",
+            "projectTypeKey": "software",
+            "simplified": false,
+            "avatarUrls": {
+                "48x48": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482",
+                "24x24": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=small",
+                "16x16": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=xsmall",
+                "32x32": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=medium"
+            }
+        },
+        "customfield_11000": "{branch={count=1, dataType=branch}, json={\"cachedValue\":{\"errors\":[],\"summary\":{\"branch\":{\"overall\":{\"count\":1,\"lastUpdated\":\"2026-02-23T11:59:06.000-0800\",\"dataType\":\"branch\"},\"byInstanceType\":{\"GitHub\":{\"count\":1,\"name\":\"GitHub\"}}}}},\"isStale\":true}}",
+        "customfield_13423": null,
+        "customfield_13424": null,
+        "customfield_13418": null,
+        "customfield_13417": null,
+        "customfield_10703": null,
+        "resolutiondate": null,
+        "customfield_15839": null,
+        "customfield_10707": null,
+        "customfield_13092": null,
+        "customfield_13091": null,
+        "watches": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/issue/DOM-74681/watchers",
+            "watchCount": 4,
+            "isWatching": true
+        },
+        "customfield_13094": null,
+        "customfield_13096": null,
+        "customfield_17212": null,
+        "customfield_13095": null,
+        "customfield_13097": null,
+        "customfield_10021": null,
+        "customfield_12200": null,
+        "customfield_10024": null,
+        "customfield_10016": [
+            {
+                "id": 10624,
+                "name": "IdSM 26.04 (Feb 25)",
+                "state": "active",
+                "boardId": 223,
+                "goal": "",
+                "startDate": "2026-02-18T14:45:22.107Z",
+                "endDate": "2026-02-25T08:00:00.000Z"
+            }
+        ],
+        "customfield_13405": null,
+        "customfield_10017": null,
+        "customfield_15945": null,
+        "customfield_15946": null,
+        "updated": "2026-02-23T14:08:57.212-0800",
+        "customfield_13090": null,
+        "customfield_13081": null,
+        "customfield_13082": null,
+        "customfield_18411": null,
+        "customfield_13087": null,
+        "timeoriginalestimate": null,
+        "customfield_13089": null,
+        "customfield_13088": null,
+        "description": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "mediaSingle",
+                    "attrs": {
+                        "width": 987,
+                        "widthType": "pixel",
+                        "layout": "align-start"
+                    },
+                    "content": [
+                        {
+                            "type": "media",
+                            "attrs": {
+                                "type": "file",
+                                "id": "4b60736a-f64e-4bf5-be4c-caf186ac4151",
+                                "alt": "Screenshot 2026-02-23 at 2.50.11\u202fPM.png",
+                                "collection": "",
+                                "height": 408,
+                                "width": 987
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "etc"
+                        }
+                    ]
+                }
+            ]
+        },
+        "customfield_15940": null,
+        "customfield_18412": null,
+        "customfield_15943": null,
+        "customfield_13521": null,
+        "customfield_15823": null,
+        "customfield_15944": null,
+        "customfield_13403": null,
+        "customfield_14610": null,
+        "customfield_15941": null,
+        "timetracking": {},
+        "customfield_13402": null,
+        "customfield_15942": null,
+        "customfield_10015": "0|i11fjj:",
+        "customfield_13515": null,
+        "customfield_14605": null,
+        "customfield_15936": null,
+        "customfield_15815": null,
+        "customfield_15937": null,
+        "customfield_15816": null,
+        "customfield_13514": null,
+        "customfield_15813": null,
+        "customfield_10800": null,
+        "customfield_15814": null,
+        "customfield_15938": null,
+        "customfield_15939": null,
+        "summary": "Various UI changes affecting Med's tests",
+        "customfield_17311": null,
+        "customfield_13076": null,
+        "customfield_13075": null,
+        "customfield_17313": null,
+        "customfield_17312": null,
+        "customfield_10000": null,
+        "customfield_15932": null,
+        "customfield_13511": null,
+        "customfield_10001": null,
+        "customfield_13510": null,
+        "customfield_15812": null,
+        "customfield_15930": null,
+        "customfield_13513": null,
+        "customfield_15931": null,
+        "customfield_13512": "Please assign ticket to the Developer",
+        "customfield_15925": null,
+        "customfield_13504": null,
+        "customfield_13503": null,
+        "environment": null,
+        "customfield_13506": null,
+        "customfield_13505": null,
+        "customfield_13508": null,
+        "customfield_15929": null,
+        "customfield_13507": null,
+        "duedate": null,
+        "customfield_15928": null,
+        "customfield_13509": null,
+        "comment": {
+            "comments": [
+                {
+                    "self": "https://dominodatalab.atlassian.net/rest/api/3/issue/293248/comment/627350",
+                    "id": "627350",
+                    "author": {
+                        "self": "https://dominodatalab.atlassian.net/rest/api/3/user?accountId=5efa77f91225f80bb166fc13",
+                        "accountId": "5efa77f91225f80bb166fc13",
+                        "emailAddress": "redacted-user@dominodatalab.com",
+                        "avatarUrls": {
+                            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/48",
+                            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/24",
+                            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/16",
+                            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/32"
+                        },
+                        "displayName": "Redacted User",
+                        "active": true,
+                        "timeZone": "America/New_York",
+                        "accountType": "atlassian"
+                    },
+                    "body": {
+                        "type": "doc",
+                        "version": 1,
+                        "content": [
+                            {
+                                "type": "paragraph",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "https://github.com/cerebrotech/internal-e2e-tests-service/pull/2609",
+                                        "marks": [
+                                            {
+                                                "type": "link",
+                                                "attrs": {
+                                                    "href": "https://github.com/cerebrotech/internal-e2e-tests-service/pull/2609"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "updateAuthor": {
+                        "self": "https://dominodatalab.atlassian.net/rest/api/3/user?accountId=5efa77f91225f80bb166fc13",
+                        "accountId": "5efa77f91225f80bb166fc13",
+                        "emailAddress": "redacted-user@dominodatalab.com",
+                        "avatarUrls": {
+                            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/48",
+                            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/24",
+                            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/16",
+                            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/32"
+                        },
+                        "displayName": "Redacted User",
+                        "active": true,
+                        "timeZone": "America/New_York",
+                        "accountType": "atlassian"
+                    },
+                    "created": "2026-02-23T14:08:54.188-0800",
+                    "updated": "2026-02-23T14:08:54.188-0800",
+                    "jsdPublic": true
+                }
+            ],
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/issue/293248/comment",
+            "maxResults": 1,
+            "total": 1,
+            "startAt": 0
+        },
+        "statuscategorychangedate": "2026-02-23T11:51:46.317-0800",
+        "customfield_21480": null,
+        "fixVersions": [],
+        "customfield_11200": null,
+        "customfield_15921": null,
+        "customfield_13500": null,
+        "customfield_15922": null,
+        "customfield_13502": null,
+        "customfield_13501": null,
+        "customfield_15920": null,
+        "customfield_15914": null,
+        "customfield_15915": null,
+        "customfield_15913": null,
+        "customfield_15918": null,
+        "customfield_15919": null,
+        "customfield_15916": null,
+        "customfield_15917": null,
+        "customfield_13292": null,
+        "customfield_13052": null,
+        "customfield_13172": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11572",
+            "value": "Open",
+            "id": "11572"
+        },
+        "customfield_13056": null,
+        "customfield_13298": null,
+        "customfield_13297": null,
+        "customfield_13299": null,
+        "customfield_15910": null,
+        "priority": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/priority/10000",
+            "iconUrl": "https://confluence.atlassian.com/jirakb/files/779160907/779160908/1/1426092115651/transparent.gif",
+            "name": "None",
+            "id": "10000"
+        },
+        "customfield_15911": null,
+        "customfield_13602": null,
+        "customfield_15901": null,
+        "customfield_15902": null,
+        "timeestimate": null,
+        "versions": [
+            {
+                "self": "https://dominodatalab.atlassian.net/rest/api/3/version/17653",
+                "id": "17653",
+                "description": "",
+                "name": "6.3.0",
+                "archived": false,
+                "released": false
+            }
+        ],
+        "customfield_15909": null,
+        "status": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/status/10900",
+            "description": "This status is managed internally by JIRA Software",
+            "iconUrl": "https://dominodatalab.atlassian.net/",
+            "name": "Reviewable",
+            "id": "10900",
+            "statusCategory": {
+                "self": "https://dominodatalab.atlassian.net/rest/api/3/statuscategory/4",
+                "id": 4,
+                "key": "indeterminate",
+                "colorName": "yellow",
+                "name": "In Progress"
+            }
+        },
+        "customfield_13160": null,
+        "customfield_13041": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "bulletList",
+                    "content": [
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "steps"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "customfield_13161": null,
+        "customfield_13043": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "bulletList",
+                    "content": [
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "actual"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "customfield_13284": null,
+        "customfield_13042": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "bulletList",
+                    "content": [
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "expected"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "customfield_12990": null,
+        "customfield_13287": null,
+        "customfield_13165": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "bulletList",
+                    "content": [
+                        {
+                            "type": "listItem",
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": "Automation issue only"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "customfield_13047": null,
+        "customfield_13289": null,
+        "customfield_13288": null,
+        "customfield_15900": null,
+        "customfield_13048": null,
+        "customfield_13601": null,
+        "customfield_11301": null,
+        "customfield_13600": null,
+        "customfield_12986": null,
+        "customfield_12989": null,
+        "aggregatetimeestimate": null,
+        "creator": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/user?accountId=63a31badfa5fbde2ba430f08",
+            "accountId": "63a31badfa5fbde2ba430f08",
+            "emailAddress": "qe.automation@dominodatalab.com",
+            "avatarUrls": {
+                "48x48": "https://secure.gravatar.com/avatar/cbfa2fda8f7be3c0cbf9346877b73bfd?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FQA-6.png",
+                "24x24": "https://secure.gravatar.com/avatar/cbfa2fda8f7be3c0cbf9346877b73bfd?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FQA-6.png",
+                "16x16": "https://secure.gravatar.com/avatar/cbfa2fda8f7be3c0cbf9346877b73bfd?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FQA-6.png",
+                "32x32": "https://secure.gravatar.com/avatar/cbfa2fda8f7be3c0cbf9346877b73bfd?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FQA-6.png"
+            },
+            "displayName": "QE Automation",
+            "active": true,
+            "timeZone": "America/Los_Angeles",
+            "accountType": "atlassian"
+        },
+        "customfield_13391": null,
+        "customfield_13390": null,
+        "customfield_13392": null,
+        "customfield_13150": null,
+        "customfield_13274": null,
+        "customfield_13032": 0.0,
+        "customfield_13394": null,
+        "customfield_13031": "",
+        "customfield_13155": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11536",
+            "value": "Not Started",
+            "id": "11536"
+        },
+        "customfield_13275": null,
+        "customfield_13154": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11535",
+            "value": "No",
+            "id": "11535"
+        },
+        "customfield_13036": null,
+        "aggregateprogress": {
+            "progress": 0,
+            "total": 0
+        },
+        "customfield_13398": null,
+        "customfield_13038": null,
+        "customfield_12985": null,
+        "customfield_13039": null,
+        "customfield_17184": null,
+        "customfield_17183": null,
+        "customfield_13382": null,
+        "customfield_13140": null,
+        "timespent": null,
+        "customfield_13142": null,
+        "customfield_13384": null,
+        "customfield_13141": null,
+        "customfield_13386": null,
+        "customfield_13143": null,
+        "customfield_12970": null,
+        "customfield_13388": null,
+        "customfield_13387": null,
+        "aggregatetimespent": null,
+        "customfield_12972": null,
+        "customfield_13148": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "What do you need access to (see list above for options)?",
+                            "marks": [
+                                {
+                                    "type": "strong"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Rationale for access request?",
+                            "marks": [
+                                {
+                                    "type": "strong"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "customfield_12971": null,
+        "customfield_13389": null,
+        "customfield_12974": null,
+        "customfield_13149": null,
+        "customfield_12964": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11144",
+            "value": "Need PM Review",
+            "id": "11144"
+        },
+        "customfield_12967": null,
+        "customfield_12969": null,
+        "customfield_12968": null,
+        "workratio": -1,
+        "customfield_17182": null,
+        "customfield_17054": null,
+        "customfield_17053": null,
+        "customfield_17052": null,
+        "customfield_13490": null,
+        "customfield_17051": null,
+        "customfield_17179": null,
+        "customfield_17057": null,
+        "customfield_13491": null,
+        "customfield_13370": null,
+        "customfield_17056": null,
+        "created": "2026-02-23T11:49:54.748-0800",
+        "customfield_13252": null,
+        "customfield_17055": null,
+        "customfield_13130": [
+            {
+                "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11489",
+                "value": "6",
+                "id": "11489"
+            }
+        ],
+        "customfield_13493": null,
+        "customfield_13496": null,
+        "customfield_13495": null,
+        "customfield_13253": null,
+        "customfield_13498": null,
+        "customfield_13497": null,
+        "customfield_15679": null,
+        "customfield_13137": null,
+        "customfield_13499": null,
+        "customfield_12963": null,
+        "customfield_13139": null,
+        "customfield_12962": null,
+        "customfield_13138": null,
+        "customfield_15678": null,
+        "customfield_12954": null,
+        "customfield_12953": null,
+        "customfield_12956": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11113",
+            "value": "None",
+            "id": "11113"
+        },
+        "customfield_12955": null,
+        "customfield_12959": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11119",
+            "value": "Automated Testcase",
+            "id": "11119"
+        },
+        "customfield_21547": null,
+        "customfield_17050": null,
+        "customfield_17047": null,
+        "customfield_15781": null,
+        "customfield_13360": null,
+        "customfield_13481": null,
+        "customfield_13480": null,
+        "customfield_13362": null,
+        "customfield_13483": null,
+        "customfield_13240": null,
+        "customfield_13361": null,
+        "customfield_13364": null,
+        "customfield_13485": null,
+        "customfield_13242": null,
+        "customfield_17049": null,
+        "customfield_13366": null,
+        "customfield_17048": null,
+        "customfield_15663": null,
+        "customfield_13123": null,
+        "customfield_13486": null,
+        "customfield_13365": null,
+        "customfield_12950": null,
+        "customfield_13489": "Defect",
+        "customfield_13368": null,
+        "customfield_13367": null,
+        "customfield_11500": [],
+        "customfield_12952": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11388",
+            "value": "Identity & SM",
+            "id": "11388"
+        },
+        "customfield_12951": null,
+        "customfield_13369": null,
+        "customfield_12945": null,
+        "security": null,
+        "customfield_12947": "No Update",
+        "attachment": [
+            {
+                "self": "https://dominodatalab.atlassian.net/rest/api/3/attachment/135930",
+                "id": "135930",
+                "filename": "Screenshot 2026-02-23 at 2.50.11\u202fPM.png",
+                "author": {
+                    "self": "https://dominodatalab.atlassian.net/rest/api/3/user?accountId=5efa77f91225f80bb166fc13",
+                    "accountId": "5efa77f91225f80bb166fc13",
+                    "emailAddress": "redacted-user@dominodatalab.com",
+                    "avatarUrls": {
+                        "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/48",
+                        "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/24",
+                        "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/16",
+                        "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/5efa77f91225f80bb166fc13/a76853be-302e-4181-b349-5a449f37e604/32"
+                    },
+                    "displayName": "Redacted User",
+                    "active": true,
+                    "timeZone": "America/New_York",
+                    "accountType": "atlassian"
+                },
+                "created": "2026-02-23T11:51:06.481-0800",
+                "size": 88766,
+                "mimeType": "image/png",
+                "content": "https://dominodatalab.atlassian.net/rest/api/3/attachment/content/135930",
+                "thumbnail": "https://dominodatalab.atlassian.net/rest/api/3/attachment/thumbnail/135930"
+            }
+        ],
+        "customfield_12946": null,
+        "customfield_12949": null,
+        "customfield_12948": null,
+        "customfield_17280": null,
+        "customfield_17153": null,
+        "customfield_17152": null,
+        "customfield_17151": null,
+        "customfield_17150": null,
+        "customfield_15891": null,
+        "customfield_16981": null,
+        "customfield_13474": null,
+        "customfield_13231": null,
+        "customfield_13476": null,
+        "customfield_13475": null,
+        "customfield_15899": null,
+        "customfield_13115": null,
+        "customfield_13599": null,
+        "customfield_13357": null,
+        "customfield_13477": null,
+        "customfield_13356": null,
+        "customfield_13359": null,
+        "customfield_12940": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11081",
+            "value": "Not sure",
+            "id": "11081"
+        },
+        "customfield_10400": null,
+        "customfield_15898": null,
+        "customfield_13358": null,
+        "customfield_13237": null,
+        "customfield_13229": null,
+        "customfield_11600": null,
+        "customfield_12931": null,
+        "customfield_13228": null,
+        "customfield_12934": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11100",
+            "value": "Other",
+            "id": "11100"
+        },
+        "customfield_12936": {
+            "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11072",
+            "value": "Satisfaction",
+            "id": "11072"
+        },
+        "customfield_12938": null,
+        "customfield_12939": null
+    }
+}

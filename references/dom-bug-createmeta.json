@@ -1,0 +1,2554 @@
+{
+  "expand": "projects",
+  "projects": [
+    {
+      "expand": "issuetypes",
+      "self": "https://dominodatalab.atlassian.net/rest/api/3/project/10103",
+      "id": "10103",
+      "key": "DOM",
+      "name": "Domino",
+      "avatarUrls": {
+        "48x48": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482",
+        "24x24": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=small",
+        "16x16": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=xsmall",
+        "32x32": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=medium"
+      },
+      "issuetypes": [
+        {
+          "self": "https://dominodatalab.atlassian.net/rest/api/3/issuetype/10004",
+          "id": "10004",
+          "description": "A problem which impairs or prevents the functions of the product.",
+          "iconUrl": "https://dominodatalab.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium",
+          "name": "Bug",
+          "untranslatedName": "Bug",
+          "subtask": false,
+          "hierarchyLevel": 0,
+          "expand": "fields",
+          "fields": {
+            "issuetype": {
+              "required": true,
+              "schema": {
+                "type": "issuetype",
+                "system": "issuetype"
+              },
+              "name": "Issue Type",
+              "key": "issuetype",
+              "hasDefaultValue": false,
+              "operations": [],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/issuetype/10004",
+                  "id": "10004",
+                  "description": "A problem which impairs or prevents the functions of the product.",
+                  "iconUrl": "https://dominodatalab.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium",
+                  "name": "Bug",
+                  "subtask": false,
+                  "avatarId": 10303,
+                  "hierarchyLevel": 0
+                }
+              ]
+            },
+            "parent": {
+              "required": false,
+              "schema": {
+                "type": "issuelink",
+                "system": "parent"
+              },
+              "name": "Parent",
+              "key": "parent",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "components": {
+              "required": true,
+              "schema": {
+                "type": "array",
+                "items": "component",
+                "system": "components"
+              },
+              "name": "Components",
+              "key": "components",
+              "hasDefaultValue": false,
+              "operations": [
+                "add",
+                "set",
+                "remove"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/13882",
+                  "id": "13882",
+                  "name": "Admin - Audit Trail"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11807",
+                  "id": "11807",
+                  "name": "Admin - Central Config"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11811",
+                  "id": "11811",
+                  "name": "Admin - Control Center"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/12827",
+                  "id": "12827",
+                  "name": "Admin - Cost Reporting"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11808",
+                  "id": "11808",
+                  "name": "Admin - Feature Flag "
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11794",
+                  "id": "11794",
+                  "name": "Admin - Home"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11810",
+                  "id": "11810",
+                  "name": "Admin - Notifications"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11795",
+                  "id": "11795",
+                  "name": "Admin - Other"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11793",
+                  "id": "11793",
+                  "name": "Admin - Users/Orgs/Auth"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/17154",
+                  "id": "17154",
+                  "name": "Admin - Workspace File Audit"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/13881",
+                  "id": "13881",
+                  "name": "AI Governance - Other"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11823",
+                  "id": "11823",
+                  "name": "Data - DCA"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11766",
+                  "id": "11766",
+                  "name": "Data - Domino Datasets"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11767",
+                  "id": "11767",
+                  "name": "Data - External Data Volumes"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/15020",
+                  "id": "15020",
+                  "name": "Data - NetApp"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11769",
+                  "id": "11769",
+                  "name": "Data - Other"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11768",
+                  "id": "11768",
+                  "name": "Data - Sources"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/14954",
+                  "id": "14954",
+                  "name": "dispatcher"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11804",
+                  "id": "11804",
+                  "name": "Docs - Architecture"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11774",
+                  "id": "11774",
+                  "name": "Environments"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11778",
+                  "id": "11778",
+                  "name": "Executions - Compute Clusters"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11821",
+                  "id": "11821",
+                  "name": "Executions - Experiment Management"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/13840",
+                  "id": "13840",
+                  "name": "Executions - Flows"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11779",
+                  "id": "11779",
+                  "name": "Executions - HW Tiers & Scaling"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11776",
+                  "id": "11776",
+                  "name": "Executions - Jobs"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/13833",
+                  "id": "13833",
+                  "name": "Executions - Observability"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11780",
+                  "id": "11780",
+                  "name": "Executions - Other"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11775",
+                  "id": "11775",
+                  "name": "Executions - Workspaces"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11798",
+                  "id": "11798",
+                  "name": "Integrations - 3rd Party"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11796",
+                  "id": "11796",
+                  "name": "Integrations - API - Frameworks"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11797",
+                  "id": "11797",
+                  "name": "Integrations - Clients - Frameworks"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/15087",
+                  "id": "15087",
+                  "name": "Life Sciences - Other"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/13834",
+                  "id": "13834",
+                  "name": "Models - AI Gateway"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11781",
+                  "id": "11781",
+                  "name": "Models - Apps"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11805",
+                  "id": "11805",
+                  "name": "Models - Exports"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11777",
+                  "id": "11777",
+                  "name": "Models - Launchers"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11783",
+                  "id": "11783",
+                  "name": "Models - Model APIs"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11822",
+                  "id": "11822",
+                  "name": "Models - Model Registry"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11782",
+                  "id": "11782",
+                  "name": "Models - Monitoring"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11784",
+                  "id": "11784",
+                  "name": "Models - Other"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11471",
+                  "id": "11471",
+                  "name": "OLD_Automate"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11498",
+                  "id": "11498",
+                  "name": "OLD_Compute Grid"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11478",
+                  "id": "11478",
+                  "name": "OLD_Secure"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11817",
+                  "id": "11817",
+                  "name": "Platform - Cloud"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/17187",
+                  "id": "17187",
+                  "name": "Platform - Deployer"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11802",
+                  "id": "11802",
+                  "name": "Platform - DevProd"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11788",
+                  "id": "11788",
+                  "name": "Platform - FleetCommand"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11790",
+                  "id": "11790",
+                  "name": "Platform - Frameworks"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11786",
+                  "id": "11786",
+                  "name": "Platform - Hybrid"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11818",
+                  "id": "11818",
+                  "name": "Platform - Image Builder"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11785",
+                  "id": "11785",
+                  "name": "Platform - Install/Upgrade"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/13883",
+                  "id": "13883",
+                  "name": "Platform - Migration"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11789",
+                  "id": "11789",
+                  "name": "Platform - Monitoring"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11792",
+                  "id": "11792",
+                  "name": "Platform - Other"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11799",
+                  "id": "11799",
+                  "name": "Platform - Python Domino"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/13837",
+                  "id": "13837",
+                  "name": "Platform - Reliability",
+                  "description": "TerraMonitor, Admin Toolkit, Grafana, Prometheus, New Relic"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11791",
+                  "id": "11791",
+                  "name": "Platform - Security"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11787",
+                  "id": "11787",
+                  "name": "Platform - Services"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11771",
+                  "id": "11771",
+                  "name": "Projects - DFS"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11772",
+                  "id": "11772",
+                  "name": "Projects - Files"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11770",
+                  "id": "11770",
+                  "name": "Projects - Git"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11773",
+                  "id": "11773",
+                  "name": "Projects - Other"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/12826",
+                  "id": "12826",
+                  "name": "Projects - Template"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/component/11819",
+                  "id": "11819",
+                  "name": "UI - Other"
+                }
+              ]
+            },
+            "customfield_13041": {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 13041
+              },
+              "name": "Steps to Replicate",
+              "key": "customfield_13041",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_15881": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+                "customId": 15881
+              },
+              "name": "Citizenship Restriction (Support)",
+              "key": "customfield_15881",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_13043": {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 13043
+              },
+              "name": "Actual Outcome",
+              "key": "customfield_13043",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_13042": {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 13042
+              },
+              "name": "Expected Outcome",
+              "key": "customfield_13042",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_13284": {
+              "required": false,
+              "schema": {
+                "type": "date",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datepicker",
+                "customId": 13284
+              },
+              "name": "Last Scrubbed By Support",
+              "key": "customfield_13284",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_13165": {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 13165
+              },
+              "name": "Customer Impact",
+              "key": "customfield_13165",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "description": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "system": "description"
+              },
+              "name": "Description",
+              "key": "description",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "project": {
+              "required": true,
+              "schema": {
+                "type": "project",
+                "system": "project"
+              },
+              "name": "Project",
+              "key": "project",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/project/10103",
+                  "id": "10103",
+                  "key": "DOM",
+                  "name": "Domino",
+                  "projectTypeKey": "software",
+                  "simplified": false,
+                  "avatarUrls": {
+                    "48x48": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482",
+                    "24x24": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=small",
+                    "16x16": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=xsmall",
+                    "32x32": "https://dominodatalab.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/13482?size=medium"
+                  }
+                }
+              ]
+            },
+            "customfield_13366": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+                "customId": 13366
+              },
+              "name": "Bug type: is it Regression?",
+              "key": "customfield_13366",
+              "hasDefaultValue": false,
+              "operations": [
+                "add",
+                "set",
+                "remove"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11893",
+                  "value": "Yes",
+                  "id": "11893"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12373",
+                  "value": "No",
+                  "id": "12373"
+                }
+              ]
+            },
+            "customfield_15900": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 15900
+              },
+              "name": "Salesforce Case Number",
+              "key": "customfield_15900",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_15867": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+                "customId": 15867
+              },
+              "name": "Cloud Customer (Support)",
+              "key": "customfield_15867",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_12952": {
+              "required": false,
+              "schema": {
+                "type": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+                "customId": 12952
+              },
+              "name": "Eng. Team",
+              "key": "customfield_12952",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12020",
+                  "value": "Compute",
+                  "id": "12020"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12034",
+                  "value": "Control",
+                  "id": "12034"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11468",
+                  "value": "Data",
+                  "id": "11468"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11252",
+                  "value": "Develop",
+                  "id": "11252"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11469",
+                  "value": "DevProd",
+                  "id": "11469"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11470",
+                  "value": "Distributions",
+                  "id": "11470"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12256",
+                  "value": "DOCS",
+                  "id": "12256"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12306",
+                  "value": "Domino Cloud",
+                  "id": "12306"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/14435",
+                  "value": "Governance",
+                  "id": "14435"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11388",
+                  "value": "Identity & SM",
+                  "id": "11388"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12300",
+                  "value": "LCA",
+                  "id": "12300"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/14436",
+                  "value": "Life Sciences",
+                  "id": "14436"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12032",
+                  "value": "Partner Solutions",
+                  "id": "12032"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12138",
+                  "value": "Platform Services",
+                  "id": "12138"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12365",
+                  "value": "PS",
+                  "id": "12365"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11389",
+                  "value": "Publish, Host, Monitor",
+                  "id": "11389"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12263",
+                  "value": "QE Automation",
+                  "id": "12263"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12261",
+                  "value": "QE Scale",
+                  "id": "12261"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12024",
+                  "value": "RE",
+                  "id": "12024"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12264",
+                  "value": "Release",
+                  "id": "12264"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/14945",
+                  "value": "Security",
+                  "id": "14945"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12307",
+                  "value": "Support",
+                  "id": "12307"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11856",
+                  "value": "Train",
+                  "id": "11856"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12180",
+                  "value": "UI",
+                  "id": "12180"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/14408",
+                  "value": "WS: Public Sector",
+                  "id": "14408"
+                }
+              ]
+            },
+            "customfield_12800": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+                "customId": 12800
+              },
+              "name": "Bug Type",
+              "key": "customfield_12800",
+              "hasDefaultValue": false,
+              "operations": [
+                "add",
+                "set",
+                "remove"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/10801",
+                  "value": "New Feature",
+                  "id": "10801"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11894",
+                  "value": "Released Feature",
+                  "id": "11894"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/10800",
+                  "value": "Internal - Not Releasable",
+                  "id": "10800"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/10900",
+                  "value": "Engineering Escalation",
+                  "id": "10900"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/10701",
+                  "value": "Configuration-dependent",
+                  "id": "10701"
+                }
+              ]
+            },
+            "customfield_12986": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 12986
+              },
+              "name": "Workaround",
+              "key": "customfield_12986",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_10501": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:labels",
+                "customId": 10501
+              },
+              "name": "Customer",
+              "key": "customfield_10501",
+              "autoCompleteUrl": "https://dominodatalab.atlassian.net/rest/api/1.0/labels/suggest?customFieldId=10501&query=",
+              "hasDefaultValue": false,
+              "operations": [
+                "add",
+                "set",
+                "remove"
+              ]
+            },
+            "customfield_15937": {
+              "required": false,
+              "schema": {
+                "type": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+                "customId": 15937
+              },
+              "name": "Failure Reason",
+              "key": "customfield_15937",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/15019",
+                  "value": "Product Bug",
+                  "id": "15019"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/15020",
+                  "value": "Test Needs Refactor",
+                  "id": "15020"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/15021",
+                  "value": "Test Framework Bug",
+                  "id": "15021"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/15022",
+                  "value": "Test Dependency Missing",
+                  "id": "15022"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/15023",
+                  "value": "System Issues",
+                  "id": "15023"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/15024",
+                  "value": "Other",
+                  "id": "15024"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/15025",
+                  "value": "Untriaged",
+                  "id": "15025"
+                }
+              ]
+            },
+            "attachment": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "attachment",
+                "system": "attachment"
+              },
+              "name": "Attachment",
+              "key": "attachment",
+              "hasDefaultValue": false,
+              "operations": [
+                "set",
+                "copy"
+              ]
+            },
+            "customfield_12903": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 12903
+              },
+              "name": "Zendesk Ticket IDs",
+              "key": "customfield_12903",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_12946": {
+              "required": false,
+              "schema": {
+                "type": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+                "customId": 12946
+              },
+              "name": "CS Priority",
+              "key": "customfield_12946",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11143",
+                  "value": "Review",
+                  "id": "11143"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11139",
+                  "value": "Highest",
+                  "id": "11139"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11096",
+                  "value": "High",
+                  "id": "11096"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11097",
+                  "value": "Medium",
+                  "id": "11097"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11098",
+                  "value": "Low",
+                  "id": "11098"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11141",
+                  "value": "None",
+                  "id": "11141"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11142",
+                  "value": "Done",
+                  "id": "11142"
+                }
+              ]
+            },
+            "customfield_12905": {
+              "required": false,
+              "schema": {
+                "type": "number",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+                "customId": 12905
+              },
+              "name": "Zendesk Ticket Count",
+              "key": "customfield_12905",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_12907": {
+              "required": true,
+              "schema": {
+                "type": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+                "customId": 12907
+              },
+              "name": "Severity",
+              "key": "customfield_12907",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11000",
+                  "value": "S0",
+                  "id": "11000"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11001",
+                  "value": "S1",
+                  "id": "11001"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11002",
+                  "value": "S2",
+                  "id": "11002"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11003",
+                  "value": "S3",
+                  "id": "11003"
+                }
+              ]
+            },
+            "summary": {
+              "required": true,
+              "schema": {
+                "type": "string",
+                "system": "summary"
+              },
+              "name": "Summary",
+              "key": "summary",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_17153": {
+              "required": false,
+              "schema": {
+                "type": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+                "customId": 17153
+              },
+              "name": "Knowledge Base Eligible",
+              "key": "customfield_17153",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/16256",
+                  "value": "Yes",
+                  "id": "16256"
+                }
+              ]
+            },
+            "customfield_13052": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:labels",
+                "customId": 13052
+              },
+              "name": "Product Theme",
+              "key": "customfield_13052",
+              "autoCompleteUrl": "https://dominodatalab.atlassian.net/rest/api/1.0/labels/suggest?customFieldId=13052&query=",
+              "hasDefaultValue": false,
+              "operations": [
+                "add",
+                "set",
+                "remove"
+              ]
+            },
+            "customfield_13130": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+                "customId": 13130
+              },
+              "name": "Major Affected Versions",
+              "key": "customfield_13130",
+              "hasDefaultValue": false,
+              "operations": [
+                "add",
+                "set",
+                "remove"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11487",
+                  "value": "1",
+                  "id": "11487"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11484",
+                  "value": "2",
+                  "id": "11484"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11485",
+                  "value": "3",
+                  "id": "11485"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11486",
+                  "value": "4",
+                  "id": "11486"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11488",
+                  "value": "5",
+                  "id": "11488"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11489",
+                  "value": "6",
+                  "id": "11489"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11490",
+                  "value": "7",
+                  "id": "11490"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11491",
+                  "value": "8",
+                  "id": "11491"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11492",
+                  "value": "9",
+                  "id": "11492"
+                }
+              ]
+            },
+            "reporter": {
+              "required": true,
+              "schema": {
+                "type": "user",
+                "system": "reporter"
+              },
+              "name": "Reporter",
+              "key": "reporter",
+              "autoCompleteUrl": "https://dominodatalab.atlassian.net/rest/api/3/user/recommend?context=Reporter&issueKey=",
+              "hasDefaultValue": true,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_10021": {
+              "required": false,
+              "schema": {
+                "type": "number",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+                "customId": 10021
+              },
+              "name": "Story Points",
+              "key": "customfield_10021",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_13299": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 13299
+              },
+              "name": "Release notes",
+              "key": "customfield_13299",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_15899": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+                "customId": 15899
+              },
+              "name": "Salesforce Case IDs",
+              "key": "customfield_15899",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "priority": {
+              "required": false,
+              "schema": {
+                "type": "priority",
+                "system": "priority"
+              },
+              "name": "Priority",
+              "key": "priority",
+              "hasDefaultValue": true,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/priority/1",
+                  "iconUrl": "https://dominodatalab.atlassian.net/images/icons/priorities/major.svg",
+                  "name": "P0",
+                  "id": "1"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/priority/2",
+                  "iconUrl": "https://dominodatalab.atlassian.net/images/icons/priorities/critical.svg",
+                  "name": "P1",
+                  "id": "2"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/priority/3",
+                  "iconUrl": "https://dominodatalab.atlassian.net/images/icons/priorities/medium.svg",
+                  "name": "P2",
+                  "id": "3"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/priority/4",
+                  "iconUrl": "https://dominodatalab.atlassian.net/images/icons/priorities/low.svg",
+                  "name": "P3",
+                  "id": "4"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/priority/10000",
+                  "iconUrl": "https://confluence.atlassian.com/jirakb/files/779160907/779160908/1/1426092115651/transparent.gif",
+                  "name": "None",
+                  "id": "10000"
+                }
+              ],
+              "defaultValue": {
+                "self": "https://dominodatalab.atlassian.net/rest/api/3/priority/10000",
+                "iconUrl": "https://confluence.atlassian.com/jirakb/files/779160907/779160908/1/1426092115651/transparent.gif",
+                "name": "None",
+                "id": "10000"
+              }
+            },
+            "labels": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "string",
+                "system": "labels"
+              },
+              "name": "Labels",
+              "key": "labels",
+              "autoCompleteUrl": "https://dominodatalab.atlassian.net/rest/api/1.0/labels/suggest?query=",
+              "hasDefaultValue": false,
+              "operations": [
+                "add",
+                "set",
+                "remove"
+              ]
+            },
+            "customfield_10400": {
+              "required": false,
+              "schema": {
+                "type": "user",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:userpicker",
+                "customId": 10400
+              },
+              "name": "Validator",
+              "key": "customfield_10400",
+              "autoCompleteUrl": "https://dominodatalab.atlassian.net/rest/api/1.0/users/picker?fieldName=customfield_10400&fieldConfigId=10601&projectId=10103&showAvatar=true&query=",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_10016": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "json",
+                "custom": "com.pyxis.greenhopper.jira:gh-sprint",
+                "customId": 10016
+              },
+              "name": "Sprint",
+              "key": "customfield_10016",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "customfield_12910": {
+              "required": false,
+              "schema": {
+                "type": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+                "customId": 12910
+              },
+              "name": "Docs required",
+              "key": "customfield_12910",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11676",
+                  "value": "No",
+                  "id": "11676"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11007",
+                  "value": "Yes",
+                  "id": "11007"
+                }
+              ]
+            },
+            "environment": {
+              "required": false,
+              "schema": {
+                "type": "string",
+                "system": "environment"
+              },
+              "name": "Environment",
+              "key": "environment",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            },
+            "versions": {
+              "required": true,
+              "schema": {
+                "type": "array",
+                "items": "version",
+                "system": "versions"
+              },
+              "name": "Affects versions",
+              "key": "versions",
+              "hasDefaultValue": false,
+              "operations": [
+                "set",
+                "add",
+                "remove"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12644",
+                  "id": "12644",
+                  "name": "2.4.1-d1",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-03-05",
+                  "userReleaseDate": "04 Mar 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12641",
+                  "id": "12641",
+                  "name": "2.4.2",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-03-16",
+                  "userReleaseDate": "15 Mar 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12692",
+                  "id": "12692",
+                  "description": "Critical patches for issues in 2.11",
+                  "name": "2.11.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-09-05",
+                  "releaseDate": "2018-09-11",
+                  "userStartDate": "04 Sep 2018",
+                  "userReleaseDate": "10 Sep 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12693",
+                  "id": "12693",
+                  "description": "Patch for nuprocess and other issues",
+                  "name": "2.8.4",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-09-05",
+                  "releaseDate": "2018-09-10",
+                  "userStartDate": "04 Sep 2018",
+                  "userReleaseDate": "09 Sep 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12697",
+                  "id": "12697",
+                  "name": "2.9.2",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-10-23",
+                  "userReleaseDate": "22 Oct 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12700",
+                  "id": "12700",
+                  "description": "Addressing Scheduled Runs",
+                  "name": "2.11.3",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-09-17",
+                  "releaseDate": "2018-09-19",
+                  "userStartDate": "16 Sep 2018",
+                  "userReleaseDate": "18 Sep 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12704",
+                  "id": "12704",
+                  "name": "2.11.4",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-09-26",
+                  "userReleaseDate": "25 Sep 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12705",
+                  "id": "12705",
+                  "name": "3.1.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-10-09",
+                  "userReleaseDate": "08 Oct 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12707",
+                  "id": "12707",
+                  "description": "SAML changes.",
+                  "name": "2.11.5",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-10-01",
+                  "releaseDate": "2018-10-08",
+                  "userStartDate": "30 Sep 2018",
+                  "userReleaseDate": "07 Oct 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12708",
+                  "id": "12708",
+                  "description": "development after 10/5/2018",
+                  "name": "3.2.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-12-03",
+                  "userReleaseDate": "02 Dec 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12710",
+                  "id": "12710",
+                  "name": "2.11.6",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-10-02",
+                  "userReleaseDate": "01 Oct 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12711",
+                  "id": "12711",
+                  "description": "Fixes for issues in 3.1.0",
+                  "name": "3.1.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-10-15",
+                  "releaseDate": "2018-10-23",
+                  "userStartDate": "14 Oct 2018",
+                  "userReleaseDate": "22 Oct 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12715",
+                  "id": "12715",
+                  "name": "2.11.7",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-10-16",
+                  "releaseDate": "2018-10-19",
+                  "userStartDate": "15 Oct 2018",
+                  "userReleaseDate": "18 Oct 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12716",
+                  "id": "12716",
+                  "name": "2.11.8",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-10-19",
+                  "releaseDate": "2018-10-25",
+                  "userStartDate": "18 Oct 2018",
+                  "userReleaseDate": "24 Oct 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12718",
+                  "id": "12718",
+                  "name": "3.1.2",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-10-24",
+                  "releaseDate": "2018-10-29",
+                  "userStartDate": "23 Oct 2018",
+                  "userReleaseDate": "28 Oct 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12723",
+                  "id": "12723",
+                  "name": "3.1.4",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-11-27",
+                  "userReleaseDate": "26 Nov 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12724",
+                  "id": "12724",
+                  "name": "2.11.9",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-11-06",
+                  "releaseDate": "2018-11-07",
+                  "userStartDate": "05 Nov 2018",
+                  "userReleaseDate": "06 Nov 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12725",
+                  "id": "12725",
+                  "name": "3.1.5",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-11-08",
+                  "releaseDate": "2018-11-20",
+                  "userStartDate": "07 Nov 2018",
+                  "userReleaseDate": "19 Nov 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12729",
+                  "id": "12729",
+                  "description": "Patch for 3.1",
+                  "name": "3.1.6",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2018-11-16",
+                  "releaseDate": "2018-12-04",
+                  "userStartDate": "15 Nov 2018",
+                  "userReleaseDate": "03 Dec 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12730",
+                  "id": "12730",
+                  "description": "Legacy build on 2.11 line (should normally not get deployed)",
+                  "name": "2.11.10",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2018-12-06",
+                  "userReleaseDate": "05 Dec 2018",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12765",
+                  "id": "12765",
+                  "description": "Scheduled patch on the GA line.",
+                  "name": "3.2.10",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-02-04",
+                  "releaseDate": "2019-02-08",
+                  "userStartDate": "03 Feb 2019",
+                  "userReleaseDate": "07 Feb 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12766",
+                  "id": "12766",
+                  "description": "DOM-11309...",
+                  "name": "3.2.11",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-02-11",
+                  "releaseDate": "2019-02-13",
+                  "userStartDate": "10 Feb 2019",
+                  "userReleaseDate": "12 Feb 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12768",
+                  "id": "12768",
+                  "name": "3.2.12",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-02-13",
+                  "releaseDate": "2019-02-13",
+                  "userStartDate": "12 Feb 2019",
+                  "userReleaseDate": "12 Feb 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12769",
+                  "id": "12769",
+                  "name": "2.11.16",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-02-12",
+                  "releaseDate": "2019-02-14",
+                  "userStartDate": "11 Feb 2019",
+                  "userReleaseDate": "13 Feb 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12770",
+                  "id": "12770",
+                  "description": "First RC post-LA",
+                  "name": "3.3.2",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-02-19",
+                  "releaseDate": "2019-02-21",
+                  "userStartDate": "18 Feb 2019",
+                  "userReleaseDate": "20 Feb 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12771",
+                  "id": "12771",
+                  "name": "3.2.13",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-02-20",
+                  "releaseDate": "2019-02-28",
+                  "userStartDate": "19 Feb 2019",
+                  "userReleaseDate": "27 Feb 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12772",
+                  "id": "12772",
+                  "name": "2.11.17",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2019-02-28",
+                  "userReleaseDate": "27 Feb 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12773",
+                  "id": "12773",
+                  "name": "3.3.3",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-02-26",
+                  "releaseDate": "2019-03-06",
+                  "userStartDate": "25 Feb 2019",
+                  "userReleaseDate": "05 Mar 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12776",
+                  "id": "12776",
+                  "name": "3.3.4",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-03-05",
+                  "releaseDate": "2019-03-12",
+                  "userStartDate": "04 Mar 2019",
+                  "userReleaseDate": "11 Mar 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12778",
+                  "id": "12778",
+                  "name": "3.2.14",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2019-03-07",
+                  "userReleaseDate": "06 Mar 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12781",
+                  "id": "12781",
+                  "description": "After another RabbitMq fix; good chance of GA.",
+                  "name": "3.3.5",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-03-07",
+                  "releaseDate": "2019-03-14",
+                  "userStartDate": "06 Mar 2019",
+                  "userReleaseDate": "13 Mar 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12784",
+                  "id": "12784",
+                  "description": "Scheduled patch on 3.3 line",
+                  "name": "3.3.6",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-03-13",
+                  "releaseDate": "2019-03-20",
+                  "userStartDate": "12 Mar 2019",
+                  "userReleaseDate": "19 Mar 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12785",
+                  "id": "12785",
+                  "name": "3.5.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2019-06-06",
+                  "userReleaseDate": "05 Jun 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12786",
+                  "id": "12786",
+                  "description": "patch release",
+                  "name": "3.3.7",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-03-19",
+                  "releaseDate": "2019-03-26",
+                  "userStartDate": "18 Mar 2019",
+                  "userReleaseDate": "25 Mar 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12787",
+                  "id": "12787",
+                  "description": "Second wave of fixes in 3.4 line.",
+                  "name": "3.4.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-04-02",
+                  "releaseDate": "2019-04-09",
+                  "userStartDate": "01 Apr 2019",
+                  "userReleaseDate": "08 Apr 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12848",
+                  "id": "12848",
+                  "description": "urgent patch DOM-15222 15084",
+                  "name": "3.5.7",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-07-19",
+                  "releaseDate": "2019-07-19",
+                  "userStartDate": "18 Jul 2019",
+                  "userReleaseDate": "18 Jul 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12852",
+                  "id": "12852",
+                  "description": "Scheduled patch",
+                  "name": "3.5.8",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-07-19",
+                  "releaseDate": "2019-07-30",
+                  "userStartDate": "18 Jul 2019",
+                  "userReleaseDate": "29 Jul 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12853",
+                  "id": "12853",
+                  "name": "2.11.20",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-05-15",
+                  "releaseDate": "2019-07-19",
+                  "userStartDate": "14 May 2019",
+                  "userReleaseDate": "18 Jul 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12855",
+                  "id": "12855",
+                  "description": "GA candidate",
+                  "name": "3.6.3",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2019-07-23",
+                  "releaseDate": "2019-07-30",
+                  "userStartDate": "22 Jul 2019",
+                  "userReleaseDate": "29 Jul 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12857",
+                  "id": "12857",
+                  "name": "4.1.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2019-11-07",
+                  "userReleaseDate": "06 Nov 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12849",
+                  "id": "12849",
+                  "description": "Bugs in system tests",
+                  "name": "test.automation",
+                  "archived": false,
+                  "released": false,
+                  "startDate": "2019-07-19",
+                  "userStartDate": "18 Jul 2019",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12744",
+                  "id": "12744",
+                  "name": "platform",
+                  "archived": false,
+                  "released": false,
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/12978",
+                  "id": "12978",
+                  "description": "Any issue which is not planned to be worked on in an upcoming release",
+                  "name": "backlog",
+                  "archived": false,
+                  "released": false,
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13011",
+                  "id": "13011",
+                  "description": "Backlog for Reliability Engineering issues",
+                  "name": "rebacklog",
+                  "archived": false,
+                  "released": false,
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13372",
+                  "id": "13372",
+                  "description": "Feature Release FY22Q3",
+                  "name": "5.0.0",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2021-11-17",
+                  "releaseDate": "2021-12-21",
+                  "userStartDate": "16 Nov 2021",
+                  "userReleaseDate": "20 Dec 2021",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13373",
+                  "id": "13373",
+                  "description": "Security Patch",
+                  "name": "5.0.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2022-01-05",
+                  "releaseDate": "2022-01-25",
+                  "userStartDate": "04 Jan 2022",
+                  "userReleaseDate": "24 Jan 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13374",
+                  "id": "13374",
+                  "description": "Bugfix Release FY22Q4",
+                  "name": "5.1.0",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2022-01-05",
+                  "releaseDate": "2022-03-07",
+                  "userStartDate": "04 Jan 2022",
+                  "userReleaseDate": "06 Mar 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13418",
+                  "id": "13418",
+                  "name": "5.4.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-12-16",
+                  "userReleaseDate": "15 Dec 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13440",
+                  "id": "13440",
+                  "name": "5.2.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-07-05",
+                  "userReleaseDate": "04 Jul 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13469",
+                  "id": "13469",
+                  "name": "5.1.1",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-03-30",
+                  "userReleaseDate": "29 Mar 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13478",
+                  "id": "13478",
+                  "description": "Hotfix to unblock upgrades",
+                  "name": "5.0.2",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2022-02-09",
+                  "releaseDate": "2022-03-03",
+                  "userStartDate": "08 Feb 2022",
+                  "userReleaseDate": "02 Mar 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13509",
+                  "id": "13509",
+                  "name": "5.3.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-09-21",
+                  "userReleaseDate": "20 Sep 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13511",
+                  "id": "13511",
+                  "description": "5.1.2",
+                  "name": "5.1.2",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2022-04-01",
+                  "releaseDate": "2022-04-28",
+                  "userStartDate": "31 Mar 2022",
+                  "userReleaseDate": "27 Apr 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13517",
+                  "id": "13517",
+                  "description": "Used for initiative tracking that will not be delivered externally via a release",
+                  "name": "N/A",
+                  "archived": false,
+                  "released": false,
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13530",
+                  "id": "13530",
+                  "name": "5.1.3",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-05-27",
+                  "userReleaseDate": "26 May 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13534",
+                  "id": "13534",
+                  "name": "5.2.1",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-07-29",
+                  "userReleaseDate": "28 Jul 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13551",
+                  "id": "13551",
+                  "name": "5.1.4",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-07-20",
+                  "userReleaseDate": "19 Jul 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/13554",
+                  "id": "13554",
+                  "name": "5.2.2",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-09-09",
+                  "userReleaseDate": "08 Sep 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14073",
+                  "id": "14073",
+                  "name": "5.3.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2022-10-17",
+                  "releaseDate": "2022-11-02",
+                  "userStartDate": "16 Oct 2022",
+                  "userReleaseDate": "01 Nov 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14080",
+                  "id": "14080",
+                  "name": "5.5.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-03-06",
+                  "userReleaseDate": "05 Mar 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14096",
+                  "id": "14096",
+                  "name": "5.6.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-05-17",
+                  "userReleaseDate": "16 May 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14098",
+                  "id": "14098",
+                  "name": "5.3.2",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2022-12-09",
+                  "userReleaseDate": "08 Dec 2022",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14112",
+                  "id": "14112",
+                  "name": "5.7.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-08-09",
+                  "userReleaseDate": "08 Aug 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14114",
+                  "id": "14114",
+                  "name": "5.4.1",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-02-09",
+                  "userReleaseDate": "08 Feb 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14119",
+                  "id": "14119",
+                  "name": "5.5.1",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-03-27",
+                  "userReleaseDate": "26 Mar 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14126",
+                  "id": "14126",
+                  "name": "5.8.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-11-03",
+                  "userReleaseDate": "02 Nov 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14130",
+                  "id": "14130",
+                  "name": "5.6.1",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-06-28",
+                  "userReleaseDate": "27 Jun 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14134",
+                  "id": "14134",
+                  "description": "Patch to 5.5.1",
+                  "name": "5.5.2",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2023-04-14",
+                  "releaseDate": "2023-04-25",
+                  "userStartDate": "13 Apr 2023",
+                  "userReleaseDate": "24 Apr 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14142",
+                  "id": "14142",
+                  "name": "5.9.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-12-14",
+                  "userReleaseDate": "13 Dec 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14148",
+                  "id": "14148",
+                  "name": "5.5.3",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-06-21",
+                  "userReleaseDate": "20 Jun 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14160",
+                  "id": "14160",
+                  "name": "5.7.1",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-08-18",
+                  "userReleaseDate": "17 Aug 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14162",
+                  "id": "14162",
+                  "name": "5.6.2",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-08-14",
+                  "userReleaseDate": "13 Aug 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14164",
+                  "id": "14164",
+                  "name": "5.5.4",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-08-10",
+                  "userReleaseDate": "09 Aug 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/14171",
+                  "id": "14171",
+                  "name": "5.7.2",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2023-08-21",
+                  "releaseDate": "2023-09-06",
+                  "userStartDate": "20 Aug 2023",
+                  "userReleaseDate": "05 Sep 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/15177",
+                  "id": "15177",
+                  "name": "5.7.3",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-10-10",
+                  "userReleaseDate": "09 Oct 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/15185",
+                  "id": "15185",
+                  "name": "5.10.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2024-03-18",
+                  "userReleaseDate": "17 Mar 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16190",
+                  "id": "16190",
+                  "name": "5.7.4",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2023-10-19",
+                  "userReleaseDate": "18 Oct 2023",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16192",
+                  "id": "16192",
+                  "name": "5.9.1",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2024-01-31",
+                  "userReleaseDate": "30 Jan 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16200",
+                  "id": "16200",
+                  "name": "5.11.0",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-05-20",
+                  "releaseDate": "2024-06-28",
+                  "userStartDate": "19 May 2024",
+                  "userReleaseDate": "27 Jun 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16203",
+                  "id": "16203",
+                  "description": "Next Major Release",
+                  "name": "6.0.0",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-09-30",
+                  "releaseDate": "2024-11-12",
+                  "userStartDate": "29 Sep 2024",
+                  "userReleaseDate": "11 Nov 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16211",
+                  "id": "16211",
+                  "description": "Next Minor release after 6.0.0 (6 months after GA date of 6.0.0)",
+                  "name": "6.1.0",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-11-11",
+                  "releaseDate": "2025-06-23",
+                  "userStartDate": "10 Nov 2024",
+                  "userReleaseDate": "22 Jun 2025",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16219",
+                  "id": "16219",
+                  "name": "5.9.2",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2024-03-13",
+                  "userReleaseDate": "12 Mar 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16221",
+                  "id": "16221",
+                  "name": "5.10.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-04-12",
+                  "releaseDate": "2024-05-02",
+                  "userStartDate": "11 Apr 2024",
+                  "userReleaseDate": "01 May 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16241",
+                  "id": "16241",
+                  "name": "5.9.3",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-05-29",
+                  "releaseDate": "2024-06-05",
+                  "userStartDate": "28 May 2024",
+                  "userReleaseDate": "04 Jun 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16244",
+                  "id": "16244",
+                  "name": "5.11.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-07-02",
+                  "releaseDate": "2024-08-08",
+                  "userStartDate": "01 Jul 2024",
+                  "userReleaseDate": "07 Aug 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16257",
+                  "id": "16257",
+                  "name": "5.11.2",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-08-08",
+                  "releaseDate": "2024-09-12",
+                  "userStartDate": "07 Aug 2024",
+                  "userReleaseDate": "11 Sep 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16271",
+                  "id": "16271",
+                  "description": "Next Patch Release after 6.0.0 (month after GA of 6.0.0)",
+                  "name": "6.0.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-11-06",
+                  "releaseDate": "2024-12-18",
+                  "userStartDate": "05 Nov 2024",
+                  "userReleaseDate": "17 Dec 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16296",
+                  "id": "16296",
+                  "description": "Patch release after 6.0.1",
+                  "name": "6.0.2",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-12-19",
+                  "releaseDate": "2025-01-27",
+                  "userStartDate": "18 Dec 2024",
+                  "userReleaseDate": "26 Jan 2025",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16277",
+                  "id": "16277",
+                  "name": "5.11.3",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-09-16",
+                  "releaseDate": "2024-10-24",
+                  "userStartDate": "15 Sep 2024",
+                  "userReleaseDate": "23 Oct 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16302",
+                  "id": "16302",
+                  "name": "5.11.4",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2024-11-11",
+                  "releaseDate": "2024-12-09",
+                  "userStartDate": "10 Nov 2024",
+                  "userReleaseDate": "08 Dec 2024",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16308",
+                  "id": "16308",
+                  "description": "Next Minor release after 6.1.0(6 months from GA of 6.1.0)",
+                  "name": "6.2.0",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2026-01-09",
+                  "userReleaseDate": "08 Jan 2026",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/16313",
+                  "id": "16313",
+                  "description": "Patch release after 6.0.2",
+                  "name": "6.0.3",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2025-01-27",
+                  "releaseDate": "2025-03-12",
+                  "userStartDate": "26 Jan 2025",
+                  "userReleaseDate": "11 Mar 2025",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/17323",
+                  "id": "17323",
+                  "description": "This release identifies Cloud specific items that are not packed within an on-prem release. This  should be used sparingly and only at the Initiative level.",
+                  "name": "Cloud Only",
+                  "archived": false,
+                  "released": false,
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/17389",
+                  "id": "17389",
+                  "description": "6.0.4 Patch release",
+                  "name": "6.0.4",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2025-03-10",
+                  "releaseDate": "2025-04-30",
+                  "userStartDate": "09 Mar 2025",
+                  "userReleaseDate": "29 Apr 2025",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/17488",
+                  "id": "17488",
+                  "name": "6.1.1",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2025-06-06",
+                  "releaseDate": "2025-07-29",
+                  "userStartDate": "05 Jun 2025",
+                  "userReleaseDate": "28 Jul 2025",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/17555",
+                  "id": "17555",
+                  "name": "6.0.5",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2025-04-28",
+                  "releaseDate": "2025-06-03",
+                  "userStartDate": "27 Apr 2025",
+                  "userReleaseDate": "02 Jun 2025",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/17621",
+                  "id": "17621",
+                  "name": "6.1.2",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2025-09-08",
+                  "userReleaseDate": "07 Sep 2025",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/17653",
+                  "id": "17653",
+                  "name": "6.3.0",
+                  "archived": false,
+                  "released": false,
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/17785",
+                  "id": "17785",
+                  "name": "6.1.3",
+                  "archived": false,
+                  "released": true,
+                  "startDate": "2025-09-09",
+                  "releaseDate": "2025-10-27",
+                  "userStartDate": "08 Sep 2025",
+                  "userReleaseDate": "26 Oct 2025",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/19887",
+                  "id": "19887",
+                  "name": "6.1.4",
+                  "archived": false,
+                  "released": true,
+                  "releaseDate": "2026-01-16",
+                  "userReleaseDate": "15 Jan 2026",
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/19991",
+                  "id": "19991",
+                  "name": "6.2.1",
+                  "archived": false,
+                  "released": false,
+                  "projectId": 10103
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/version/22065",
+                  "id": "22065",
+                  "name": "6.2.2",
+                  "archived": false,
+                  "released": false,
+                  "projectId": 10103
+                }
+              ]
+            },
+            "customfield_12959": {
+              "required": true,
+              "schema": {
+                "type": "option",
+                "custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+                "customId": 12959
+              },
+              "name": "Found by",
+              "key": "customfield_12959",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ],
+              "allowedValues": [
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11118",
+                  "value": "Manual With Testcase",
+                  "id": "11118"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11884",
+                  "value": "Manual No Testcase",
+                  "id": "11884"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11119",
+                  "value": "Automated Testcase",
+                  "id": "11119"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12120",
+                  "value": "load-staging",
+                  "id": "12120"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11121",
+                  "value": "Customer",
+                  "id": "11121"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11443",
+                  "value": "Customer Success",
+                  "id": "11443"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11444",
+                  "value": "SRE",
+                  "id": "11444"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/11445",
+                  "value": "PM",
+                  "id": "11445"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/12125",
+                  "value": "Bug Bash",
+                  "id": "12125"
+                },
+                {
+                  "self": "https://dominodatalab.atlassian.net/rest/api/3/customFieldOption/15038",
+                  "value": "Exploratory testing",
+                  "id": "15038"
+                }
+              ]
+            },
+            "issuelinks": {
+              "required": false,
+              "schema": {
+                "type": "array",
+                "items": "issuelinks",
+                "system": "issuelinks"
+              },
+              "name": "Linked Issues",
+              "key": "issuelinks",
+              "autoCompleteUrl": "https://dominodatalab.atlassian.net/rest/api/3/issue/picker?currentProjectId=&showSubTaskParent=true&showSubTasks=true&currentIssueKey=null&query=",
+              "hasDefaultValue": false,
+              "operations": [
+                "add",
+                "copy"
+              ]
+            },
+            "assignee": {
+              "required": false,
+              "schema": {
+                "type": "user",
+                "system": "assignee"
+              },
+              "name": "Assignee",
+              "key": "assignee",
+              "autoCompleteUrl": "https://dominodatalab.atlassian.net/rest/api/3/user/assignable/search?project=DOM&query=",
+              "hasDefaultValue": false,
+              "operations": [
+                "set"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
