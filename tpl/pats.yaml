@@ -8,7 +8,7 @@ expected_outcome: |
 actual_outcome: |
   * {{actual}}
 description: |
-  {{notes | indent(2)}}
+  {{notes | default("") | indent(2)}}
 
 affects_versions: [6.3.0]
 components: [Admin - Users]
