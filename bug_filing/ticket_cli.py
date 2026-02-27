@@ -38,7 +38,12 @@ from bug_filing.issue_field_index import IssueFieldIndex
 from bug_filing.jira_session import jira_base_url, jira_requests_session
 from bug_filing.jira_users import get_jira_user_ids, UserHandler
 from bug_filing.jira_sprints import get_jira_sprints, SprintHandler
-from bug_filing.ticket_yaml import build_ticket_payload, ticket_template, validate_ticket_yaml
+from bug_filing.ticket_yaml import (
+    build_ticket_payload,
+    split_yaml_documents,
+    ticket_template,
+    validate_ticket_yaml,
+)
 from bug_filing.templating import hydrate, load_variables, required_variables
 
 
@@ -133,6 +138,11 @@ def _build_parser():
     p_submit.add_argument(
         "--dry-run", action="store_true", default=False,
         help="Emit the JSON payload instead of submitting to Jira.",
+    )
+    p_submit.add_argument(
+        "--invalid-stash", metavar="FILEPATH", default=None,
+        help="Write invalid documents (with commented validation errors) to FILEPATH "
+             "as a multi-document YAML; valid documents are submitted as normal.",
     )
     add_infile(p_submit)
 
@@ -254,29 +264,116 @@ def _cmd_validate(args):
         raise RuntimeError(result)
 
 
-def _cmd_submit(args):
-    yaml_text = args.infile.read()
-    _extract_yaml_defaults(yaml_text, args)
-    _require_project_and_issuetype(args)
-    session, index = _make_index(args)
+def _format_validation_comments(result):
+    """Convert a validation error dict into a block of YAML comment lines."""
+    lines = ["# Validation errors:"]
+    if "parse_error" in result:
+        for line in result["parse_error"].splitlines():
+            lines.append(f"#   {line}")
+    if "missing_fields" in result:
+        lines.append(f"#   missing_fields: {', '.join(result['missing_fields'])}")
+    if "unknown_fields" in result:
+        lines.append(f"#   unknown_fields: {', '.join(str(f) for f in result['unknown_fields'])}")
+    if "ambiguous_fields" in result:
+        lines.append("#   ambiguous_fields:")
+        for key, candidates in result["ambiguous_fields"].items():
+            lines.append(f"#     {key}: {candidates}")
+    if "ambiguous_values" in result:
+        lines.append("#   ambiguous_values:")
+        for field, vals in result["ambiguous_values"].items():
+            for raw, matches in vals.items():
+                lines.append(f"#     {field}: {raw!r} matches {matches}")
+    if "invalid_values" in result:
+        lines.append("#   invalid_values:")
+        for field, err in result["invalid_values"].items():
+            lines.append(f"#     {field}: {err}")
+    return "\n".join(lines)
 
-    result = validate_ticket_yaml(index, yaml_text)
-    if result != {"ok": True}:
-        print(json.dumps(result, indent=2), file=sys.stderr)
-        raise ValueError("Ticket YAML failed validation")
 
-    payload = build_ticket_payload(index, yaml_text)
+def _format_stash(invalid_docs):
+    """Render invalid documents with validation error comments as a multi-doc YAML string."""
+    parts = []
+    for doc_text, _, _, result in invalid_docs:
+        comments = _format_validation_comments(result)
+        parts.append("---\n" + comments + "\n" + doc_text.strip("\n"))
+    return "\n".join(parts) + "\n"
 
-    if args.dry_run:
+
+def _submit_one(session, index, doc_text, dry_run):
+    """Validate-then-submit (or dry-run) a single document. Returns the created URL or None."""
+    payload = build_ticket_payload(index, doc_text)
+    if dry_run:
         print(json.dumps(payload, indent=2))
-        return
-
+        return None
     response = session.post(f"{jira_base_url()}/rest/api/3/issue", json=payload)
     if response.status_code == 201:
         key = response.json()["key"]
-        print(f"Created: {jira_base_url()}/browse/{key}")
-    else:
-        raise RuntimeError(f"Jira API error {response.status_code}: {response.text}")
+        url = f"{jira_base_url()}/browse/{key}"
+        print(f"Created: {url}")
+        return url
+    raise RuntimeError(f"Jira API error {response.status_code}: {response.text}")
+
+
+def _cmd_submit(args):
+    yaml_text = args.infile.read()
+    docs = split_yaml_documents(yaml_text)
+
+    if len(docs) == 1:
+        # Single-document path — original behaviour.
+        _extract_yaml_defaults(yaml_text, args)
+        _require_project_and_issuetype(args)
+        session, index = _make_index(args)
+
+        result = validate_ticket_yaml(index, yaml_text)
+        if result != {"ok": True}:
+            print(json.dumps(result, indent=2), file=sys.stderr)
+            raise ValueError("Ticket YAML failed validation")
+
+        _submit_one(session, index, yaml_text, args.dry_run)
+        return
+
+    # Multi-document path.
+    index_cache = {}   # (project, issuetype) -> (session, index)
+    docs_info = []     # (doc_text, session|None, index|None, result)
+
+    for doc_text in docs:
+        doc_args = argparse.Namespace(project=args.project, issuetype=args.issuetype)
+        _extract_yaml_defaults(doc_text, doc_args)
+        try:
+            _require_project_and_issuetype(doc_args)
+        except RuntimeError as e:
+            docs_info.append((doc_text, None, None, {"ok": False, "parse_error": str(e)}))
+            continue
+
+        cache_key = (doc_args.project, doc_args.issuetype)
+        if cache_key not in index_cache:
+            index_cache[cache_key] = _make_index(doc_args)
+        session, index = index_cache[cache_key]
+
+        result = validate_ticket_yaml(index, doc_text)
+        docs_info.append((doc_text, session, index, result))
+
+    valid   = [(t, s, i, r) for t, s, i, r in docs_info if r == {"ok": True}]
+    invalid = [(t, s, i, r) for t, s, i, r in docs_info if r != {"ok": True}]
+
+    if invalid and not args.invalid_stash:
+        all_results = [r for _, _, _, r in docs_info]
+        print(json.dumps(all_results, indent=2), file=sys.stderr)
+        raise ValueError(
+            f"Batch validation failed: {len(invalid)} of {len(docs_info)} documents invalid"
+        )
+
+    for doc_text, session, index, _ in valid:
+        _submit_one(session, index, doc_text, args.dry_run)
+
+    if invalid:
+        with open(args.invalid_stash, "w") as f:
+            f.write(_format_stash(invalid))
+        print(
+            f"{len(valid)} valid ticket(s) submitted, "
+            f"{len(invalid)} invalid ticket(s) saved to {args.invalid_stash}",
+            file=sys.stderr,
+        )
 
 
 _DEFAULT_VARIABLES_FILE = "default_variables.yaml"

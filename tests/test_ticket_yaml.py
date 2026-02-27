@@ -8,6 +8,7 @@ from bug_filing.ticket_yaml import (
     ticket_template,
     validate_ticket_yaml,
     build_ticket_payload,
+    split_yaml_documents,
 )
 
 
@@ -553,3 +554,52 @@ def test_build_payload_setdefault_does_not_overwrite():
     )
     payload = build_ticket_payload(idx, "{}")
     assert payload["fields"]["issuetype"] == {"name": "Story"}
+
+
+# ---------------------------------------------------------------------------
+# split_yaml_documents
+# ---------------------------------------------------------------------------
+
+def test_split_single_document_no_separator():
+    docs = split_yaml_documents("key: value\n")
+    assert docs == ["key: value\n"]
+
+
+def test_split_two_documents():
+    text = "a: 1\n---\nb: 2\n"
+    docs = split_yaml_documents(text)
+    assert len(docs) == 2
+    assert "a: 1" in docs[0]
+    assert "b: 2" in docs[1]
+
+
+def test_split_three_documents():
+    text = "a: 1\n---\nb: 2\n---\nc: 3\n"
+    assert len(split_yaml_documents(text)) == 3
+
+
+def test_split_leading_separator_ignored():
+    # A leading --- means the first "document" before it is empty and dropped.
+    text = "---\na: 1\n---\nb: 2\n"
+    docs = split_yaml_documents(text)
+    assert len(docs) == 2
+    assert "a: 1" in docs[0]
+    assert "b: 2" in docs[1]
+
+
+def test_split_separator_with_trailing_spaces():
+    text = "a: 1\n---   \nb: 2\n"
+    assert len(split_yaml_documents(text)) == 2
+
+
+def test_split_empty_string_returns_one_element():
+    # Ensures callers always get a list they can index.
+    docs = split_yaml_documents("")
+    assert len(docs) == 1
+
+
+def test_split_preserves_original_text():
+    text = "a: 1\n---\nb: 2\n"
+    docs = split_yaml_documents(text)
+    assert "a: 1" in docs[0]
+    assert "b: 2" in docs[1]

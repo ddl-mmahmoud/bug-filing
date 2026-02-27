@@ -159,6 +159,18 @@ def validate_ticket_yaml(index, yaml_string):
     return errors
 
 
+def split_yaml_documents(text):
+    """Split a YAML text into a list of per-document strings.
+
+    Splits on document-start markers (``---`` on its own line).  Returns a
+    list with one element per non-empty document.  A single-document input
+    (no ``---`` separators) returns a one-element list.
+    """
+    parts = re.split(r'(?m)^---[ \t]*$', text)
+    docs = [p for p in parts if p.strip()]
+    return docs if docs else [text]
+
+
 def build_ticket_payload(index, yaml_string):
     """
     Build a Jira issue create payload dict from a YAML ticket string.
