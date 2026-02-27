@@ -24,5 +24,5 @@ components: [{{ component }}]
 found_by: Automated Testcase
 reporter: {{ reporter }}
 eng_team: {{ eng_team }}
-labels: [{{ label }}]
+labels: [{{ ("blocking" if blocking else "not-blocking") if blocking is defined else blocking }}]
 failure_reason: {{ failure_reason }}
