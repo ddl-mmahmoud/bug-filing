@@ -29,12 +29,16 @@ def test_hydrate_unused_variables_are_ignored():
     assert hydrate("summary: {{ title }}", {"title": "X", "extra": "ignored"}) == "summary: X"
 
 
-def test_hydrate_missing_variable_is_empty():
-    assert hydrate("summary: {{ missing }}", {}) == "summary: "
+def test_hydrate_missing_variable_passthrough():
+    assert hydrate("summary: {{ missing }}", {}) == "summary: {{ missing }}"
 
 
-def test_hydrate_missing_dotted_variable_is_empty():
-    assert hydrate("components: {{ team.component }}", {}) == "components: "
+def test_hydrate_missing_dotted_variable_passthrough():
+    assert hydrate("components: {{ team.component }}", {}) == "components: {{ team.component }}"
+
+
+def test_hydrate_missing_multiple_variables_passthrough():
+    assert hydrate("{{ a }} {{ b }}", {}) == "{{ a }} {{ b }}"
 
 
 def test_hydrate_preserves_trailing_newline():
