@@ -156,6 +156,10 @@ def _build_parser():
         "--list", action="store_true", default=False,
         help="List available templates in the tpl/ directory.",
     )
+    mode.add_argument(
+        "--template", metavar="FILE",
+        help="Read the template from FILE and variables from STDIN.",
+    )
     p_hydrate.add_argument(
         "--absolute", action="store_true", default=False,
         help="With --list, print absolute paths instead of tpl/-relative paths.",
@@ -285,6 +289,19 @@ def _cmd_hydrate(args):
         paths = [p for p in paths if os.path.isfile(p)]
         for p in paths:
             print(os.path.abspath(p) if args.absolute else p)
+        return
+
+    if args.template:
+        with open(args.template) as f:
+            template_text = f.read()
+        variables = {}
+        if os.path.exists(_DEFAULT_VARIABLES_FILE):
+            variables = load_variables(_DEFAULT_VARIABLES_FILE)
+        stdin_vars = yaml.safe_load(args.infile.read()) or {}
+        if not isinstance(stdin_vars, dict):
+            raise ValueError("Variables on stdin must be a YAML mapping")
+        variables = {**variables, **stdin_vars}
+        print(hydrate(template_text, variables), end="")
         return
 
     template_text = args.infile.read()
