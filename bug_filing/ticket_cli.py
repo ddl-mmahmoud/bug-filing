@@ -142,7 +142,7 @@ def _build_parser():
         "hydrate",
         help="Interpolate variables into a YAML template read from STDIN.",
     )
-    mode = p_hydrate.add_mutually_exclusive_group(required=True)
+    mode = p_hydrate.add_mutually_exclusive_group(required=False)
     mode.add_argument(
         "--variables", "--vars", metavar="FILE",
         help="Path to a YAML file whose values are interpolated into the template.",
@@ -266,13 +266,20 @@ def _cmd_submit(args):
         raise RuntimeError(f"Jira API error {response.status_code}: {response.text}")
 
 
+_DEFAULT_VARIABLES_FILE = "default_variables.yaml"
+
+
 def _cmd_hydrate(args):
     template_text = args.infile.read()
     if args.requirements:
         stub = required_variables(template_text)
         print(yaml.dump(stub, default_flow_style=False), end="")
     else:
-        variables = load_variables(args.variables)
+        variables = {}
+        if os.path.exists(_DEFAULT_VARIABLES_FILE):
+            variables = load_variables(_DEFAULT_VARIABLES_FILE)
+        if args.variables:
+            variables = {**variables, **load_variables(args.variables)}
         print(hydrate(template_text, variables), end="")
 
 
