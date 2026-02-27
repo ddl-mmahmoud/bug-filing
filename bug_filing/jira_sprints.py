@@ -81,9 +81,16 @@ def get_jira_sprints(session):
 
 
 class SprintHandler(FieldTypeHandler):
-    """Type handler for Jira sprint (gh-sprint) array fields."""
+    """Type handler for Jira sprint (gh-sprint) fields.
+
+    Despite the createmeta schema advertising "type": "array", the Jira Cloud
+    REST API create/update endpoint expects a bare integer sprint ID, not a
+    list or an object wrapper.  force_scalar=True suppresses the array wrapping
+    that _enveloped would otherwise apply.
+    """
 
     tag = "sprint"
+    force_scalar = True  # write API wants a plain int, not [{"id": N}]
 
     def __init__(self, sprints):
         self._sprints = sprints  # {sprint_name: sprint_id}
@@ -98,7 +105,7 @@ class SprintHandler(FieldTypeHandler):
         sprint_id = self._sprints.get(value)
         if not sprint_id:
             raise ValueError(f"Sprint {value!r} not found among active/future sprints")
-        return {"id": sprint_id}
+        return sprint_id
 
     def allowed(self, meta):
         return "SPRINT"

@@ -16,7 +16,8 @@ class FieldTypeHandler:
     defaults (no matcher, identity canonical, None allowed-list).
     """
 
-    tag = None  # short string identifier, e.g. "choice", "user", "sprint"
+    tag = None          # short string identifier, e.g. "choice", "user", "sprint"
+    force_scalar = False  # set True to ignore schema "type: array" on writes
 
     def detect(self, meta: dict) -> bool:
         """Return True if this handler should be used for the given field metadata."""
@@ -154,9 +155,9 @@ class IssueFieldIndex:
         """Return (is_array, handler) for the given field, cached after first call."""
         if field_name not in self._resolved:
             meta = self.fields[self.name_to_key[field_name]]
-            is_array = meta["schema"]["type"] == "array"
             for handler in self._handlers:
                 if handler.detect(meta):
+                    is_array = meta["schema"]["type"] == "array" and not handler.force_scalar
                     self._resolved[field_name] = (is_array, handler)
                     break
             else:

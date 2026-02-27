@@ -242,7 +242,11 @@ def test_sprint_handler_matcher_case_insensitive():
 
 def test_sprint_handler_envelope_exact_key():
     handler = SprintHandler({"Sprint One": 10})
-    assert handler.envelope("Sprint One", {}) == {"id": 10}
+    assert handler.envelope("Sprint One", {}) == 10
+
+
+def test_sprint_handler_force_scalar():
+    assert SprintHandler.force_scalar is True
 
 
 def test_sprint_handler_envelope_missing_raises():
