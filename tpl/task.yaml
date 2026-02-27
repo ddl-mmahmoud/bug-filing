@@ -1,0 +1,18 @@
+summary: {{summary}}
+description: |
+  {{description | default("") | indent(2)}}
+
+eng_team: Identity
+components: [Admin - Other]
+
+priority: P2
+story_points: 1
+
+labels: []
+sprint: {{my_current_sprint}}
+
+reporter: Med Mahmoud
+assignee: Med Mahmoud
+
+project: DOM
+issue_type: Task

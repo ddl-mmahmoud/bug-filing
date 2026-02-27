@@ -1,0 +1,21 @@
+summary: {{summary}}
+customer_impact: |
+  * impact
+steps_to_replicate: |
+  * steps
+expected_outcome: |
+  * expected
+actual_outcome: |
+  * actual
+description: |
+  {{description | default("") | indent(2)}}
+
+components: [Admin - Other]
+severity: S2
+labels: [not-blocking]
+affects_versions: [{{current_develop}}]
+
+project: DOM
+issuetype: Bug
+found_by: Manual No Testcase
+reporter: Med Mahmoud

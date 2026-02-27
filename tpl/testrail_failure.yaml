@@ -1,0 +1,24 @@
+summary: {{ summary }}
+project: DOM
+issuetype: Bug
+severity: {{ severity }}
+affects_versions: [{{ version }}]
+customer_impact: TBD
+steps_to_replicate: |-
+  Run e2e test: <{{ tc_link }}>
+
+expected_outcome: |-
+  The feature should be validated by the e2e test.
+
+actual_outcome: |-
+  {{ actual_outcome | default("") | indent(2) }}
+
+description: |-
+  {{ description | default("") | indent(2) }}
+
+components: [{{ component }}]
+found_by: Automated Testcase
+reporter: {{ reporter }}
+eng_team: {{ eng_team }}
+labels: [{{ label }}]
+failure_reason: {{ failure_reason }}
