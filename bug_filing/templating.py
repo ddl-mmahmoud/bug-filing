@@ -7,7 +7,7 @@ raise an UndefinedError so mistakes are caught early.
 """
 
 import yaml
-from jinja2 import Environment, StrictUndefined, UndefinedError
+from jinja2 import ChainableUndefined, Environment
 from jinja2 import meta as jinja2_meta
 
 
@@ -70,9 +70,6 @@ def required_variables(template_text: str) -> dict:
 
 
 def hydrate(template_text: str, variables: dict) -> str:
-    """Render *template_text* with *variables*, raising on undefined names."""
-    env = Environment(undefined=StrictUndefined, keep_trailing_newline=True)
-    try:
-        return env.from_string(template_text).render(variables)
-    except UndefinedError as e:
-        raise ValueError(f"Template variable error: {e}") from e
+    """Render *template_text* with *variables*, leaving undefined names as empty strings."""
+    env = Environment(undefined=ChainableUndefined, keep_trailing_newline=True)
+    return env.from_string(template_text).render(variables)

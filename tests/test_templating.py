@@ -29,9 +29,12 @@ def test_hydrate_unused_variables_are_ignored():
     assert hydrate("summary: {{ title }}", {"title": "X", "extra": "ignored"}) == "summary: X"
 
 
-def test_hydrate_missing_variable_raises():
-    with pytest.raises(ValueError, match="undefined"):
-        hydrate("summary: {{ missing }}", {})
+def test_hydrate_missing_variable_is_empty():
+    assert hydrate("summary: {{ missing }}", {}) == "summary: "
+
+
+def test_hydrate_missing_dotted_variable_is_empty():
+    assert hydrate("components: {{ team.component }}", {}) == "components: "
 
 
 def test_hydrate_preserves_trailing_newline():
