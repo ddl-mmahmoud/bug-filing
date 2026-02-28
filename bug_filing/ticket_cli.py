@@ -8,8 +8,6 @@ template   Emit a YAML template for the given project / issue type on STDOUT.
 validate   Read a YAML ticket from STDIN and report any errors as JSON.
 submit     Validate a YAML ticket from STDIN and file it as a Jira issue.
            Use --dry-run to emit the JSON payload instead of submitting.
-hydrate    Interpolate variables from a YAML file into a template on STDIN
-           and emit the result on STDOUT.
 
 Required environment variables
 -------------------------------
@@ -23,11 +21,9 @@ Example usage
   ticket-yaml validate --project DOM --issuetype Bug < my-ticket.yaml
   ticket-yaml submit   --project DOM --issuetype Bug < my-ticket.yaml
   ticket-yaml submit   --project DOM --issuetype Bug --dry-run < my-ticket.yaml
-  ticket-yaml hydrate  --variables vars.yaml < my-template.yaml
 """
 
 import argparse
-import glob
 import json
 import os
 import sys
@@ -44,7 +40,6 @@ from bug_filing.ticket_yaml import (
     ticket_template,
     validate_ticket_yaml,
 )
-from bug_filing.templating import hydrate, load_variables, required_variables
 
 
 def _build_parser():
@@ -145,36 +140,6 @@ def _build_parser():
              "as a multi-document YAML; valid documents are submitted as normal.",
     )
     add_infile(p_submit)
-
-    # ------------------------------------------------------------------ #
-    # hydrate                                                              #
-    # ------------------------------------------------------------------ #
-    p_hydrate = sub.add_parser(
-        "hydrate",
-        help="Interpolate variables into a YAML template read from STDIN.",
-    )
-    mode = p_hydrate.add_mutually_exclusive_group(required=False)
-    mode.add_argument(
-        "--variables", "--vars", metavar="FILE",
-        help="Path to a YAML file whose values are interpolated into the template.",
-    )
-    mode.add_argument(
-        "--requirements", action="store_true", default=False,
-        help="Emit a stub YAML listing the variables the template requires.",
-    )
-    mode.add_argument(
-        "--list", action="store_true", default=False,
-        help="List available templates in the tpl/ directory.",
-    )
-    mode.add_argument(
-        "--template", metavar="FILE",
-        help="Read the template from FILE and variables from STDIN.",
-    )
-    p_hydrate.add_argument(
-        "--absolute", action="store_true", default=False,
-        help="With --list, print absolute paths instead of tpl/-relative paths.",
-    )
-    add_infile(p_hydrate)
 
     return parser
 
@@ -376,53 +341,11 @@ def _cmd_submit(args):
         )
 
 
-_DEFAULT_VARIABLES_FILE = "default_variables.yaml"
-_TEMPLATES_DIR = "tpl"
-
-
-def _cmd_hydrate(args):
-    if args.list:
-        paths = sorted(glob.glob(os.path.join(_TEMPLATES_DIR, "**", "*"), recursive=True))
-        paths = [p for p in paths if os.path.isfile(p)]
-        for p in paths:
-            print(os.path.abspath(p) if args.absolute else p)
-        return
-
-    if args.template:
-        with open(args.template) as f:
-            template_text = f.read()
-        variables = {}
-        if os.path.exists(_DEFAULT_VARIABLES_FILE):
-            variables = load_variables(_DEFAULT_VARIABLES_FILE)
-        stdin_vars = yaml.safe_load(args.infile.read()) or {}
-        if not isinstance(stdin_vars, dict):
-            raise ValueError("Variables on stdin must be a YAML mapping")
-        variables = {**variables, **stdin_vars}
-        print(hydrate(template_text, variables), end="")
-        return
-
-    template_text = args.infile.read()
-    if args.requirements:
-        stub = required_variables(template_text)
-        print(yaml.dump(stub, default_flow_style=False), end="")
-    else:
-        variables = {}
-        if os.path.exists(_DEFAULT_VARIABLES_FILE):
-            variables = load_variables(_DEFAULT_VARIABLES_FILE)
-        if args.variables:
-            variables = {**variables, **load_variables(args.variables)}
-        print(hydrate(template_text, variables), end="")
-
-
 _COMMANDS = {
     "template": _cmd_template,
     "validate": _cmd_validate,
     "submit":   _cmd_submit,
-    "hydrate":  _cmd_hydrate,
 }
-
-# Subcommands that do not require a Jira connection.
-_NO_JIRA_COMMANDS = {"hydrate"}
 
 
 def main():
@@ -430,8 +353,7 @@ def main():
     args = parser.parse_args()
     try:
         _apply_access_overrides(args)
-        if args.subcommand not in _NO_JIRA_COMMANDS:
-            _check_required_env_vars()
+        _check_required_env_vars()
         _COMMANDS[args.subcommand](args)
         return 0
 

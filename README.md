@@ -8,19 +8,17 @@ Very vibe coded.
 ```
 usage: ticket-yaml [-h] [--jira-url URL] [--jira-username EMAIL]
                    [--jira-password TOKEN]
-                   {template,validate,submit,hydrate} ...
+                   {template,validate,submit} ...
 
 YAML-based Jira ticket authoring tool.
 
 positional arguments:
-  {template,validate,submit,hydrate}
+  {template,validate,submit}
     template            Emit a YAML template for the given project and issue
                         type.
     validate            Validate a YAML ticket read from STDIN.
     submit              Validate and file a YAML ticket from STDIN as a Jira
                         issue.
-    hydrate             Interpolate variables into a YAML template read from
-                        STDIN.
 
 options:
   -h, --help            show this help message and exit
@@ -42,8 +40,6 @@ template   Emit a YAML template for the given project / issue type on STDOUT.
 validate   Read a YAML ticket from STDIN and report any errors as JSON.
 submit     Validate a YAML ticket from STDIN and file it as a Jira issue.
            Use --dry-run to emit the JSON payload instead of submitting.
-hydrate    Interpolate variables from a YAML file into a template on STDIN
-           and emit the result on STDOUT.
 
 Required environment variables
 -------------------------------
@@ -57,5 +53,4 @@ Example usage
   ticket-yaml validate --project DOM --issuetype Bug < my-ticket.yaml
   ticket-yaml submit   --project DOM --issuetype Bug < my-ticket.yaml
   ticket-yaml submit   --project DOM --issuetype Bug --dry-run < my-ticket.yaml
-  ticket-yaml hydrate  --variables vars.yaml < my-template.yaml
 ```
