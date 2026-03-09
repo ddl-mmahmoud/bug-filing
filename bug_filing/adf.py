@@ -1,3 +1,5 @@
+import sys
+
 import mistletoe
 from mistletoe.base_renderer import BaseRenderer
 
@@ -145,3 +147,99 @@ def from_markdown(text):
     """Convert a Markdown string to an ADF document dict."""
     with ADFRenderer() as renderer:
         return renderer.render(mistletoe.Document(text))
+
+
+def to_markdown(adf):
+    """Convert an ADF document dict to a Markdown string."""
+    return _adf_block(adf).strip()
+
+
+def _adf_block(node):
+    node_type = node.get("type")
+    content = node.get("content", [])
+
+    if node_type == "doc":
+        parts = [_adf_block(c) for c in content]
+        return "\n\n".join(p for p in parts if p)
+
+    if node_type == "paragraph":
+        return _adf_inlines(content)
+
+    if node_type == "heading":
+        level = node.get("attrs", {}).get("level", 1)
+        return "#" * level + " " + _adf_inlines(content)
+
+    if node_type == "blockquote":
+        inner_parts = [_adf_block(c) for c in content]
+        inner = "\n\n".join(p for p in inner_parts if p)
+        return "\n".join("> " + line for line in inner.splitlines())
+
+    if node_type == "codeBlock":
+        lang = (node.get("attrs") or {}).get("language") or ""
+        text = _adf_inlines(content)
+        return f"```{lang}\n{text}\n```"
+
+    if node_type == "bulletList":
+        return "\n".join(_adf_list_item(c, "- ") for c in content)
+
+    if node_type == "orderedList":
+        items = [_adf_list_item(c, f"{i}. ") for i, c in enumerate(content, 1)]
+        return "\n".join(items)
+
+    if node_type == "rule":
+        return "---"
+
+    print(f"adf.to_markdown: unsupported block node {node_type!r}", file=sys.stderr)
+    return ""
+
+
+def _adf_list_item(node, prefix):
+    """Render a listItem node with the given bullet/number prefix."""
+    content = node.get("content", [])
+    parts = []
+    for i, child in enumerate(content):
+        rendered = _adf_block(child)
+        if not rendered:
+            continue
+        if i == 0:
+            lines = rendered.splitlines()
+            parts.append("\n".join(
+                [prefix + lines[0]] + [" " * len(prefix) + l for l in lines[1:]]
+            ))
+        else:
+            indent = " " * len(prefix)
+            parts.append("\n".join(indent + l for l in rendered.splitlines()))
+    return "\n".join(parts) if parts else prefix
+
+
+def _adf_inlines(nodes):
+    return "".join(_adf_inline(n) for n in nodes)
+
+
+def _adf_inline(node):
+    node_type = node.get("type")
+
+    if node_type == "text":
+        text = node.get("text", "")
+        for mark in node.get("marks", []):
+            mark_type = mark.get("type")
+            if mark_type == "strong":
+                text = f"**{text}**"
+            elif mark_type == "em":
+                text = f"*{text}*"
+            elif mark_type == "strike":
+                text = f"~~{text}~~"
+            elif mark_type == "code":
+                text = f"`{text}`"
+            elif mark_type == "link":
+                href = (mark.get("attrs") or {}).get("href", "")
+                text = f"[{text}]({href})"
+            else:
+                print(f"adf.to_markdown: unsupported mark {mark_type!r}", file=sys.stderr)
+        return text
+
+    if node_type == "hardBreak":
+        return "\n"
+
+    print(f"adf.to_markdown: unsupported inline node {node_type!r}", file=sys.stderr)
+    return ""
