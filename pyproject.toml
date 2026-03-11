@@ -15,3 +15,4 @@ dependencies = [
 
 [project.scripts]
 ticket-yaml = "bug_filing.ticket_cli:main"
+get-ticket-yaml = "bug_filing.get_ticket_cli:main"
