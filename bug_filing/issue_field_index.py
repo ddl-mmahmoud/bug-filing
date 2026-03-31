@@ -90,6 +90,21 @@ class AdfHandler(FieldTypeHandler):
         return "ADF"
 
 
+class ParentHandler(FieldTypeHandler):
+    tag = "parent"
+
+    def detect(self, meta):
+        return meta["schema"].get("system") == "parent"
+
+    def envelope(self, value, meta):
+        if isinstance(value, dict):
+            return value
+        return {"key": str(value)}
+
+    def allowed(self, meta):
+        return "SCALAR"
+
+
 class StringHandler(FieldTypeHandler):
     tag = "string"
 
@@ -105,7 +120,7 @@ class StringHandler(FieldTypeHandler):
         return "SCALAR"
 
 
-_BUILTIN_HANDLERS = [ChoiceHandler(), AdfHandler(), StringHandler()]
+_BUILTIN_HANDLERS = [ChoiceHandler(), AdfHandler(), ParentHandler(), StringHandler()]
 
 
 class IssueFieldIndex:

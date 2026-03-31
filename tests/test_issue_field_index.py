@@ -64,6 +64,10 @@ def _sprint_field(name, *, required=False):
     }
 
 
+def _parent_field(name, *, required=False):
+    return {"name": name, "required": required, "schema": {"type": "issuelink", "system": "parent"}}
+
+
 def _make_index(fields, type_handlers=None):
     return IssueFieldIndex(
         _make_session(_createmeta(fields)), "P", "T",
@@ -493,6 +497,21 @@ def test_canonical_value_array_field():
 # ---------------------------------------------------------------------------
 # Custom FieldTypeHandler registration
 # ---------------------------------------------------------------------------
+
+def test_field_tag_parent():
+    idx = _make_index({"parent": _parent_field("Parent")})
+    assert idx.field_tag("Parent") == "parent"
+
+
+def test_enveloped_parent_wraps_string_in_key():
+    idx = _make_index({"parent": _parent_field("Parent")})
+    assert idx._enveloped("DOM-9999", "Parent") == {"key": "DOM-9999"}
+
+
+def test_enveloped_parent_passthrough_dict():
+    idx = _make_index({"parent": _parent_field("Parent")})
+    assert idx._enveloped({"key": "DOM-9999"}, "Parent") == {"key": "DOM-9999"}
+
 
 def test_custom_handler_takes_priority_over_builtins():
     """A custom handler registered before the built-ins is consulted first."""
