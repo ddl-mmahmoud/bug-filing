@@ -358,6 +358,8 @@ def main():
         return 0
 
     except (ValueError, RuntimeError) as e:
+        if isinstance(e, json.JSONDecodeError):
+            raise
         print(f"Error: {e}", file=sys.stderr)
         return 1
 

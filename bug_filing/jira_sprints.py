@@ -38,6 +38,7 @@ def get_jira_sprints(session):
             url=f"{jira_base_url()}/rest/agile/1.0/board",
             params={"maxResults": 50, "startAt": start},
         )
+        response.raise_for_status()
         batch = json.loads(response.text)
         boards.extend(batch["values"])
         logging.info(f"jira get boards startAt {start}, got {len(batch['values'])}")

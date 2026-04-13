@@ -41,7 +41,7 @@ def get_jira_user_ids(session):
             params=params,
         )
         logging.info(f"jira get users offset {offset}")
-
+        response.raise_for_status()
         raw_batch = json.loads(response.text)
         batch_jira_user_ids = {
             user["displayName"]: user["accountId"]
