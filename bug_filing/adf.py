@@ -135,7 +135,11 @@ class ADFRenderer(BaseRenderer):
         """Render all children and flatten any inline node lists."""
         result = []
         for child in token.children:
-            rendered = self.render(child)
+            try:
+                rendered = self.render(child)
+            except Exception as exc:
+                from pprint import pprint; pprint(f"{token.__dict__}")
+                raise type(exc)(f"while rendering {token!r}: {exc}") from exc
             if isinstance(rendered, list):
                 result.extend(rendered)
             else:

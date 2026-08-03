@@ -11,6 +11,7 @@ from bug_filing.ticket_cli import (
     _cmd_submit,
     _format_validation_comments,
     _format_stash,
+    _submit_one,
 )
 
 
@@ -140,6 +141,115 @@ def test_format_stash_is_parseable_yaml():
     assert len(docs) == 1
     parsed = yaml.safe_load(docs[0])
     assert parsed["project"] == "DOM"
+
+
+# ---------------------------------------------------------------------------
+# _submit_one — post-creation fields (status, add_comments)
+# ---------------------------------------------------------------------------
+
+_TRANSITION_ISSUE = "bug_filing.ticket_cli.transition_issue"
+_ADD_COMMENT      = "bug_filing.ticket_cli.add_comment"
+
+
+@patch(_JIRA_BASE_URL, return_value=DUMMY_BASE)
+@patch(_BUILD_PAYLOAD, return_value=DUMMY_PAYLOAD)
+@patch(_TRANSITION_ISSUE)
+def test_submit_one_transitions_status_after_creation(mock_transition, mock_build, mock_base, capsys):
+    session = MagicMock()
+    session.post.return_value = MagicMock(status_code=201, **{"json.return_value": {"key": "DOM-1"}})
+
+    _submit_one(session, MagicMock(), "summary: Hi\nstatus: In Progress\n", dry_run=False)
+
+    mock_transition.assert_called_once_with("DOM-1", "In Progress", session=session)
+    assert "Transitioned DOM-1 to In Progress" in capsys.readouterr().out
+
+
+@patch(_JIRA_BASE_URL, return_value=DUMMY_BASE)
+@patch(_BUILD_PAYLOAD, return_value=DUMMY_PAYLOAD)
+@patch(_ADD_COMMENT)
+def test_submit_one_adds_comments_after_creation(mock_add_comment, mock_build, mock_base, capsys):
+    session = MagicMock()
+    session.post.return_value = MagicMock(status_code=201, **{"json.return_value": {"key": "DOM-1"}})
+
+    _submit_one(session, MagicMock(), "summary: Hi\nadd_comments:\n  - First\n  - Second\n", dry_run=False)
+
+    assert mock_add_comment.call_args_list == [
+        (("DOM-1", "First"), {"session": session}),
+        (("DOM-1", "Second"), {"session": session}),
+    ]
+    assert "Added 2 comment(s) to DOM-1" in capsys.readouterr().out
+
+
+@patch(_JIRA_BASE_URL, return_value=DUMMY_BASE)
+@patch(_BUILD_PAYLOAD, return_value=DUMMY_PAYLOAD)
+@patch(_ADD_COMMENT)
+@patch(_TRANSITION_ISSUE)
+def test_submit_one_no_post_creation_fields_skips_both(mock_transition, mock_add_comment, mock_build, mock_base):
+    session = MagicMock()
+    session.post.return_value = MagicMock(status_code=201, **{"json.return_value": {"key": "DOM-1"}})
+
+    _submit_one(session, MagicMock(), "summary: Hi\n", dry_run=False)
+
+    mock_transition.assert_not_called()
+    mock_add_comment.assert_not_called()
+
+
+@patch(_JIRA_BASE_URL, return_value=DUMMY_BASE)
+@patch(_BUILD_PAYLOAD, return_value=DUMMY_PAYLOAD)
+@patch(_ADD_COMMENT)
+def test_submit_one_dry_run_skips_post_creation(mock_add_comment, mock_build, mock_base):
+    session = MagicMock()
+
+    _submit_one(session, MagicMock(), "summary: Hi\nadd_comments:\n  - First\n", dry_run=True)
+
+    session.post.assert_not_called()
+    mock_add_comment.assert_not_called()
+
+
+@patch(_JIRA_BASE_URL, return_value=DUMMY_BASE)
+@patch(_BUILD_PAYLOAD, return_value=DUMMY_PAYLOAD)
+def test_submit_one_dry_run_shows_comments_on_stderr(mock_build, mock_base, capsys):
+    session = MagicMock()
+
+    _submit_one(
+        session, MagicMock(),
+        "summary: Hi\nadd_comments:\n  - First comment\n  - Second comment\n",
+        dry_run=True,
+    )
+
+    out, err = capsys.readouterr()
+    assert '"fields"' in out
+    assert "add_comments (2)" in err
+    assert "First comment" in err
+    assert "Second comment" in err
+
+
+@patch(_JIRA_BASE_URL, return_value=DUMMY_BASE)
+@patch(_BUILD_PAYLOAD, return_value=DUMMY_PAYLOAD)
+def test_submit_one_dry_run_no_comments_no_stderr(mock_build, mock_base, capsys):
+    session = MagicMock()
+
+    _submit_one(session, MagicMock(), "summary: Hi\n", dry_run=True)
+
+    assert capsys.readouterr().err == ""
+
+
+@patch(_JIRA_BASE_URL, return_value=DUMMY_BASE)
+@patch(_BUILD_PAYLOAD, return_value=DUMMY_PAYLOAD)
+def test_submit_one_dry_run_multiline_comment_all_commented(mock_build, mock_base, capsys):
+    session = MagicMock()
+
+    _submit_one(
+        session, MagicMock(),
+        "summary: Hi\nadd_comments:\n  - |\n    line one\n    line two\n",
+        dry_run=True,
+    )
+
+    err = capsys.readouterr().err
+    for line in err.splitlines():
+        assert line.startswith("#"), f"Non-comment line: {line!r}"
+    assert "line one" in err
+    assert "line two" in err
 
 
 # ---------------------------------------------------------------------------

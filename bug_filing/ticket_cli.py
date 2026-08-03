@@ -31,11 +31,14 @@ import sys
 import yaml
 
 from bug_filing.issue_field_index import IssueFieldIndex
+from bug_filing.jira_comments import add_comment
 from bug_filing.jira_session import jira_base_url, jira_requests_session
+from bug_filing.jira_transitions import transition_issue
 from bug_filing.jira_users import get_jira_user_ids, UserHandler
 from bug_filing.jira_sprints import get_jira_sprints, SprintHandler
 from bug_filing.ticket_yaml import (
     build_ticket_payload,
+    post_creation_fields,
     split_yaml_documents,
     ticket_template,
     validate_ticket_yaml,
@@ -264,19 +267,43 @@ def _format_stash(invalid_docs):
     return "\n".join(parts) + "\n"
 
 
+def _format_dry_run_comments(comments):
+    """Render add_comments entries as a stderr preview for --dry-run."""
+    lines = [f"# add_comments ({len(comments)}) — would be added after creation:"]
+    for i, comment in enumerate(comments, start=1):
+        lines.append(f"# --- comment {i} ---")
+        lines.extend(f"# {line}" for line in comment.splitlines())
+    return "\n".join(lines)
+
+
 def _submit_one(session, index, doc_text, dry_run):
     """Validate-then-submit (or dry-run) a single document. Returns the created URL or None."""
     payload = build_ticket_payload(index, doc_text)
     if dry_run:
         print(json.dumps(payload, indent=2))
+        comments = post_creation_fields(doc_text).get("add_comments") or []
+        if comments:
+            print(_format_dry_run_comments(comments), file=sys.stderr)
         return None
     response = session.post(f"{jira_base_url()}/rest/api/3/issue", json=payload)
-    if response.status_code == 201:
-        key = response.json()["key"]
-        url = f"{jira_base_url()}/browse/{key}"
-        print(f"Created: {url}")
-        return url
-    raise RuntimeError(f"Jira API error {response.status_code}: {response.text}")
+    if response.status_code != 201:
+        raise RuntimeError(f"Jira API error {response.status_code}: {response.text}")
+
+    key = response.json()["key"]
+    url = f"{jira_base_url()}/browse/{key}"
+    print(f"Created: {url}")
+
+    post_fields = post_creation_fields(doc_text)
+    if "status" in post_fields:
+        transition_issue(key, post_fields["status"], session=session)
+        print(f"Transitioned {key} to {post_fields['status']}")
+    comments = post_fields.get("add_comments") or []
+    for comment in comments:
+        add_comment(key, comment, session=session)
+    if comments:
+        print(f"Added {len(comments)} comment(s) to {key}")
+
+    return url
 
 
 def _cmd_submit(args):

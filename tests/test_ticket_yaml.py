@@ -8,6 +8,8 @@ from bug_filing.ticket_yaml import (
     ticket_template,
     validate_ticket_yaml,
     build_ticket_payload,
+    post_creation_fields,
+    split_post_creation_fields,
     split_yaml_documents,
 )
 
@@ -554,6 +556,103 @@ def test_build_payload_setdefault_does_not_overwrite():
     )
     payload = build_ticket_payload(idx, "{}")
     assert payload["fields"]["issuetype"] == {"name": "Story"}
+
+
+# ---------------------------------------------------------------------------
+# split_post_creation_fields / post_creation_fields
+# ---------------------------------------------------------------------------
+
+def test_split_post_creation_pulls_out_status():
+    create, post = split_post_creation_fields({"summary": "Hi", "status": "In Progress"})
+    assert create == {"summary": "Hi"}
+    assert post == {"status": "In Progress"}
+
+
+def test_split_post_creation_pulls_out_add_comments():
+    create, post = split_post_creation_fields({"summary": "Hi", "add_comments": ["a", "b"]})
+    assert create == {"summary": "Hi"}
+    assert post == {"add_comments": ["a", "b"]}
+
+
+def test_split_post_creation_normalizes_key_case_and_spacing():
+    create, post = split_post_creation_fields({"Add Comments": ["a"], "Status": "Done"})
+    assert create == {}
+    assert post == {"add_comments": ["a"], "status": "Done"}
+
+
+def test_split_post_creation_no_special_keys_unchanged():
+    create, post = split_post_creation_fields({"summary": "Hi"})
+    assert create == {"summary": "Hi"}
+    assert post == {}
+
+
+def test_post_creation_fields_from_yaml_string():
+    result = post_creation_fields("summary: Hi\nstatus: Verification\n")
+    assert result == {"status": "Verification"}
+
+
+def test_post_creation_fields_non_mapping_returns_empty():
+    assert post_creation_fields("- a\n- b") == {}
+
+
+# ---------------------------------------------------------------------------
+# validate_ticket_yaml — post-creation fields
+# ---------------------------------------------------------------------------
+
+def test_validate_status_field_not_reported_unknown():
+    idx = _make_index(allowed_fields=["Summary"], user_required=["Summary"])
+    result = validate_ticket_yaml(idx, "summary: Hi\nstatus: In Progress")
+    assert result == {"ok": True}
+
+
+def test_validate_add_comments_field_not_reported_unknown():
+    idx = _make_index(allowed_fields=["Summary"], user_required=["Summary"])
+    result = validate_ticket_yaml(idx, "summary: Hi\nadd_comments:\n  - a comment")
+    assert result == {"ok": True}
+
+
+def test_validate_status_non_string_is_invalid():
+    idx = _make_index(allowed_fields=["Summary"], user_required=["Summary"])
+    result = validate_ticket_yaml(idx, "summary: Hi\nstatus:\n  - a\n  - b")
+    assert result["ok"] is False
+    assert "status" in result["invalid_values"]
+
+
+def test_validate_status_blank_is_invalid():
+    idx = _make_index(allowed_fields=["Summary"], user_required=["Summary"])
+    result = validate_ticket_yaml(idx, "summary: Hi\nstatus: ''")
+    assert result["ok"] is False
+    assert "status" in result["invalid_values"]
+
+
+def test_validate_add_comments_non_list_is_invalid():
+    idx = _make_index(allowed_fields=["Summary"], user_required=["Summary"])
+    result = validate_ticket_yaml(idx, "summary: Hi\nadd_comments: not a list")
+    assert result["ok"] is False
+    assert "add_comments" in result["invalid_values"]
+
+
+def test_validate_add_comments_non_string_element_is_invalid():
+    idx = _make_index(allowed_fields=["Summary"], user_required=["Summary"])
+    result = validate_ticket_yaml(idx, "summary: Hi\nadd_comments:\n  - 5")
+    assert result["ok"] is False
+    assert "add_comments" in result["invalid_values"]
+
+
+# ---------------------------------------------------------------------------
+# build_ticket_payload — post-creation fields excluded
+# ---------------------------------------------------------------------------
+
+def test_build_payload_excludes_status_and_add_comments():
+    idx = _make_index(
+        fuzzy_payload_result={"fields": {"summary": "Hello"}},
+        unambiguous={},
+        name_to_key={},
+    )
+    build_ticket_payload(idx, "summary: Hello\nstatus: In Progress\nadd_comments:\n  - hi")
+    called_with = idx.fuzzy_payload.call_args[0][0]
+    assert "status" not in called_with
+    assert "add_comments" not in called_with
 
 
 # ---------------------------------------------------------------------------

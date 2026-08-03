@@ -17,6 +17,48 @@ def _yaml_key(field_name):
     return re.sub(r'\s+', '_', s).strip('_')
 
 
+# YAML keys handled outside the Jira create-issue payload: Jira has no
+# "status" field to set at creation (new issues always start at their
+# workflow's initial status — see references/dom-bug-createmeta.json), and
+# comments are added via a separate endpoint. Both are applied after the
+# issue is created (see ticket_cli._submit_one).
+POST_CREATION_KEYS = ("status", "add_comments")
+
+
+def _normalize_post_creation_key(key):
+    """Like `_yaml_key`, but keeps underscores as word separators instead of
+    stripping them — needed since POST_CREATION_KEYS are already underscore_case."""
+    s = re.sub(r'[^a-zA-Z0-9\s_]', '', str(key)).lower()
+    return re.sub(r'[\s_]+', '_', s).strip('_')
+
+
+def split_post_creation_fields(data):
+    """
+    Split a parsed ticket YAML mapping into (create_fields, post_creation_fields).
+
+    Keys that normalise to one of POST_CREATION_KEYS are pulled into
+    `post_creation_fields`; everything else is left in `create_fields` for
+    the normal Jira field-matching path.
+    """
+    create_fields, post_fields = {}, {}
+    for key, value in data.items():
+        normalized = _normalize_post_creation_key(key)
+        if normalized in POST_CREATION_KEYS:
+            post_fields[normalized] = value
+        else:
+            create_fields[key] = value
+    return create_fields, post_fields
+
+
+def post_creation_fields(yaml_string):
+    """Return the post-creation pseudo-fields parsed from a ticket YAML string."""
+    data = yaml.safe_load(yaml_string)
+    if not isinstance(data, dict):
+        return {}
+    _, post_fields = split_post_creation_fields(data)
+    return post_fields
+
+
 def ticket_template(index, minimal=False, maximal=False):
     """
     Generate a YAML template string for a ticket.
@@ -101,6 +143,8 @@ def validate_ticket_yaml(index, yaml_string):
     if not isinstance(data, dict):
         return {"parse_error": "Expected a YAML mapping at the top level"}
 
+    data, post_fields = split_post_creation_fields(data)
+
     field_matcher = FuzzyMatcher(index.allowed_fields())
 
     resolved = {}        # field_name -> raw value from YAML
@@ -142,6 +186,16 @@ def validate_ticket_yaml(index, yaml_string):
             except ValueError as e:
                 invalid_values[field_name] = str(e)
 
+    if "status" in post_fields:
+        status_value = post_fields["status"]
+        if not isinstance(status_value, str) or not status_value.strip():
+            invalid_values["status"] = "must be a non-empty string"
+
+    if "add_comments" in post_fields:
+        comments_value = post_fields["add_comments"]
+        if not isinstance(comments_value, list) or not all(isinstance(c, str) for c in comments_value):
+            invalid_values["add_comments"] = "must be a list of markdown strings"
+
     if not (missing_fields or ambiguous_fields or ambiguous_values or unknown_fields or invalid_values):
         return {"ok": True}
 
@@ -179,6 +233,7 @@ def build_ticket_payload(index, yaml_string):
     The returned dict has the shape {"fields": {...}} ready for the Jira API.
     """
     data = yaml.safe_load(yaml_string)
+    data, _ = split_post_creation_fields(data)
     payload = index.fuzzy_payload(data)
     for field_name, enveloped_value in index.unambiguous.items():
         payload["fields"].setdefault(index.name_to_key[field_name], enveloped_value)

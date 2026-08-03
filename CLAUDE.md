@@ -57,6 +57,29 @@ preventing `_enveloped` from wrapping the value in a list. Needed for `SprintHan
 - The `references/` directory contains real API responses that are useful as ground truth
   when debugging field format issues.
 
+## Post-creation YAML fields
+
+Two YAML keys are handled outside the normal Jira field-matching path, since
+neither is a real createmeta field:
+
+- **`status`**: Jira's create-issue API has no status field — a new issue
+  always starts at its workflow's initial status. Setting `status: In Progress`
+  (etc.) in the YAML causes `submit` to call `jira_transitions.transition_issue`
+  right after creation, which fuzzy-matches the value against the destination
+  statuses (`to.name`) of whatever transitions are actually available from the
+  issue's current status, then posts the matching transition. "Status Category"
+  (To Do / In Progress / Done) is a read-only rollup Jira derives from `status`
+  and can't be set directly — use the underlying status name instead.
+- **`add_comments`**: a YAML list of markdown strings, each added as a
+  separate comment via `jira_comments.add_comment` (which converts markdown to
+  ADF) right after creation.
+
+Both are split out of the YAML by `ticket_yaml.split_post_creation_fields`
+before `validate_ticket_yaml`/`build_ticket_payload` ever see the rest of the
+fields, and applied in `ticket_cli._submit_one` after the `POST /issue` call
+succeeds. `--dry-run` only emits the create payload, so these aren't reflected
+in dry-run output.
+
 ## hydrate behaviour
 
 - `default_variables.yaml` in CWD is always loaded as the base variable set.
