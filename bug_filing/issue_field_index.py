@@ -1,3 +1,5 @@
+import datetime
+
 from bug_filing.fuzzy_matcher import FuzzyMatcher
 from bug_filing.jira_session import jira_base_url
 
@@ -105,6 +107,25 @@ class ParentHandler(FieldTypeHandler):
         return "SCALAR"
 
 
+class DateHandler(FieldTypeHandler):
+    """Date/datetime fields. YAML parses bare ``2026-11-04`` into a ``date``
+    object, which isn't JSON serializable, so convert to an ISO string."""
+    tag = "date"
+
+    def detect(self, meta):
+        return meta["schema"].get("type") in ("date", "datetime")
+
+    def envelope(self, value, meta):
+        if isinstance(value, (datetime.date, datetime.datetime)):
+            return value.isoformat()
+        if isinstance(value, str):
+            return value
+        raise ValueError(f"Expected a date string, got {type(value).__name__}")
+
+    def allowed(self, meta):
+        return "SCALAR"
+
+
 class StringHandler(FieldTypeHandler):
     tag = "string"
 
@@ -120,7 +141,7 @@ class StringHandler(FieldTypeHandler):
         return "SCALAR"
 
 
-_BUILTIN_HANDLERS = [ChoiceHandler(), AdfHandler(), ParentHandler(), StringHandler()]
+_BUILTIN_HANDLERS = [ChoiceHandler(), AdfHandler(), ParentHandler(), DateHandler(), StringHandler()]
 
 
 class IssueFieldIndex:
@@ -131,7 +152,7 @@ class IssueFieldIndex:
 
     ``type_handlers`` is an optional list of :class:`FieldTypeHandler` instances
     that are consulted before the built-in handlers (ChoiceHandler, AdfHandler,
-    StringHandler).  Register external handlers such as UserHandler or
+    ParentHandler, DateHandler, StringHandler).  Register external handlers such as UserHandler or
     SprintHandler here.
     """
 

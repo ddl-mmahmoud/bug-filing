@@ -320,6 +320,43 @@ def test_enveloped_string_rejects_dict():
         idx._enveloped({"k": "v"}, "F")
 
 
+def _date_field(name, *, type="date", system=None):
+    schema = {"type": type}
+    if system:
+        schema["system"] = system
+    return {"name": name, "required": False, "schema": schema}
+
+
+def test_field_tag_date():
+    idx = _make_index({"duedate": _date_field("Due date", system="duedate")})
+    assert idx.field_tag("Due date") == "date"
+
+
+def test_enveloped_date_object_becomes_iso_string():
+    import datetime
+    idx = _make_index({"duedate": _date_field("Due date", system="duedate")})
+    assert idx._enveloped(datetime.date(2026, 11, 4), "Due date") == "2026-11-04"
+
+
+def test_enveloped_datetime_object_becomes_iso_string():
+    import datetime
+    idx = _make_index({"f": _date_field("F", type="datetime")})
+    result = idx._enveloped(datetime.datetime(2026, 11, 4, 9, 30), "F")
+    assert result == "2026-11-04T09:30:00"
+
+
+def test_enveloped_date_string_passthrough():
+    idx = _make_index({"duedate": _date_field("Due date", system="duedate")})
+    assert idx._enveloped("2026-11-04", "Due date") == "2026-11-04"
+
+
+def test_fuzzy_payload_yaml_date_is_json_serializable():
+    import datetime, json
+    idx = _make_index({"duedate": _date_field("Due date", system="duedate")})
+    payload = idx.fuzzy_payload({"due date": datetime.date(2026, 11, 4)})
+    assert json.loads(json.dumps(payload)) == {"fields": {"duedate": "2026-11-04"}}
+
+
 def test_enveloped_choice_wraps_in_first_key():
     av = [{"name": "High", "id": "1"}]
     idx = _make_index({"f": _choice_field("F", av)})
